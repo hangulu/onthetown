@@ -9,10 +9,13 @@ requests_cache.install_cache('googleAPICache') # cache searches for tests to not
 
 class User:
 
-    def __init__(self, name, lat, lon):
+    def __init__(self, name, lat, lon, pricePref, ratingPref, eventPref):
         self.name = name
         self.location = lat, lon
         self.organizer = False
+        self.pricePref = pricePref
+        self.ratingPref = ratingPref
+        self.eventPref = eventPref
 
 class Party:
     def __init__(self, users = []):
@@ -50,13 +53,13 @@ class Party:
 
     def searchLocation(self, type="", radius=5000):
         APIKEY = config.api_key
-        parameters = {"location": str(self.center[0])+","+str(self.center[1]),"radius":radius, "type":type,"key":APIKEY}
-
+        for i in range(4)
+        parameters = {"location": str(self.center[0])+","+str(self.center[1]),"radius":radius, "type":type,"key":APIKEY, "pagetoken": i}
         response = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters)
         data = response.json()
-
-        print type, "Used cache?", response.from_cache
-
+        if type == "restaurant":
+            print "restaurant count", len(data["results"])
+        # print type, "Used cache?", response.from_cache
         for place in data["results"]:
             name = place["name"] if "name" in place else None
             price = place["price_level"] if "price_level" in place else None
@@ -75,6 +78,16 @@ class Party:
             if dict not in self.places:
                 self.places.append(dict)
 
+    def filterList(self):
+        filteredList = []
+        for user in self.users:
+            for place in self.places:
+                if place not in filteredList:
+                    if place["price"] <= user.pricePref and place["rating"] >= user.ratingPref:
+                        if user.eventPref in place["types"]:
+                            filteredList.append(place)
+        self.filteredPlaces = filteredList
+
 
 # tests dont work together for some reason the second keeps data from the first but we can fix that later!
 print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
@@ -91,16 +104,30 @@ print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
 print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
 
 party1 = Party()
-hakeem1 = User("Hakeem", 40.807835, -73.963957)
-louie1 = User("Louie", 40.709013, -74.013692)
-amadou1 = User("Amadou", 40.773585, -73.936027)
+print party1
+hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 0, "bar")
+louie1 = User("Louie", 40.709013, -74.013692, 4, 0, "restaurant")
+amadou1 = User("Amadou", 40.773585, -73.936027, 4, 0, "night_club")
 party1.addToParty(hakeem1)
+print party1
 party1.addToParty(louie1)
+print party1
 party1.addToParty(amadou1)
+print party1
 party1.findCenter()
+
 print party1.center
 
 for type in googleTypes.googleTypes:
-    party1.searchLocation(type)
+    party1.searchLocation(type, 500)
 
 print len(party1.places)
+
+party1.filterList()
+print len(party1.filteredPlaces)
+
+# count = 0
+# for place in party1.places:
+#     if "restaurant" in place["types"]:
+#         count += 1
+# print "restaurant count", count
