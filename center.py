@@ -57,7 +57,6 @@ class Party:
 
 
 # tests dont work together for some reason the second keeps data from the first but we can fix that later!
-
 print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
 # party = Party()
 # hakeem = User(42.3736, -71.1097)
