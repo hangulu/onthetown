@@ -53,30 +53,30 @@ class Party:
 
     def searchLocation(self, type="", radius=5000):
         APIKEY = config.api_key
-        for i in range(4)
-        parameters = {"location": str(self.center[0])+","+str(self.center[1]),"radius":radius, "type":type,"key":APIKEY, "pagetoken": i}
-        response = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters)
-        data = response.json()
-        if type == "restaurant":
-            print "restaurant count", len(data["results"])
-        # print type, "Used cache?", response.from_cache
-        for place in data["results"]:
-            name = place["name"] if "name" in place else None
-            price = place["price_level"] if "price_level" in place else None
-            rating = place["rating"] if "rating" in place else None
-            location = place["geometry"]["location"]["lat"], place["geometry"]["location"]["lng"]
-            address = place["vicinity"] if "vicinity" in place else None
-            types = [str(type) for type in place["types"]] if "types" in place else None
+        for i in range(4):
+            parameters = {"location": str(self.center[0])+","+str(self.center[1]),"radius":radius, "type":type,"key":APIKEY, "pagetoken": i}
+            response = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters)
+            data = response.json()
+            if type == "restaurant":
+                print "restaurant count", len(data["results"])
+            # print type, "Used cache?", response.from_cache
+            for place in data["results"]:
+                name = place["name"] if "name" in place else None
+                price = place["price_level"] if "price_level" in place else None
+                rating = place["rating"] if "rating" in place else None
+                location = place["geometry"]["location"]["lat"], place["geometry"]["location"]["lng"]
+                address = place["vicinity"] if "vicinity" in place else None
+                types = [str(type) for type in place["types"]] if "types" in place else None
 
-            dict = {"name": name, # each place is its own dict for easy access to what you're looking for
-                    "price": price,
-                    "rating": rating,
-                    "location": location,
-                    "address": address,
-                    "types": types}
+                dict = {"name": name, # each place is its own dict for easy access to what you're looking for
+                        "price": price,
+                        "rating": rating,
+                        "location": location,
+                        "address": address,
+                        "types": types}
 
-            if dict not in self.places:
-                self.places.append(dict)
+                if dict not in self.places:
+                    self.places.append(dict)
 
     def filterList(self):
         filteredList = []
