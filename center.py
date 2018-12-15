@@ -65,8 +65,6 @@ class Party:
 
         try:
             next_page_token = data["next_page_token"]
-<<<<<<< HEAD
-=======
             while next_page_token:
                 parameters2 = {"pagetoken" : next_page_token, "key" : APIKEY}
                 response2 = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters2)
@@ -93,7 +91,6 @@ class Party:
 
                     if dict2 not in self.places:
                         self.places.append(dict2)
->>>>>>> 7a7d806fb417155ae98ad4993212d67118805635
         except:
             pass
 
@@ -125,8 +122,9 @@ class Party:
             for place in self.places:
                 if place not in filteredList:
                     if place["price"] <= user.pricePref and place["rating"] >= user.ratingPref:
-                        if user.eventPref in place["types"]:
-                            filteredList.append(place)
+                        for pref in user.eventPref:
+                            if pref in place["types"]:
+                                filteredList.append(place)
         self.filteredPlaces = filteredList
 
     def updateAll(self):
@@ -149,30 +147,15 @@ class Party:
 # print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
 # test 2
 party1 = Party()
-<<<<<<< HEAD
-print party1
 hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 5, ["bar"])
 louie1 = User("Louie", 40.709013, -74.013692, 4, 4, ["restaurant"])
 amadou1 = User("Amadou", 40.773585, -73.936027, 4, 4, ["night_club"])
-=======
-hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 0, "bar")
-louie1 = User("Louie", 40.709013, -74.013692, 4, 0, "restaurant")
-amadou1 = User("Amadou", 40.773585, -73.936027, 4, 0, "night_club")
->>>>>>> 7a7d806fb417155ae98ad4993212d67118805635
 party1.addToParty(hakeem1)
 party1.addToParty(louie1)
 party1.addToParty(amadou1)
-<<<<<<< HEAD
-print party1
-party1.findCenter()
-
-print party1.center
-
-for type in googleTypes.googleTypes:
-    party1.searchLocation(type, 5000)
+party1.updateAll()
 
 print len(party1.places)
-party1.filterList()
 print "filtered", len(party1.filteredPlaces)
 
 count = 0
@@ -209,6 +192,3 @@ print "count", count
 #
 #
 # sadnessFunction(party1.places[1], party1)
-=======
-party1.updateAll()
->>>>>>> 7a7d806fb417155ae98ad4993212d67118805635
