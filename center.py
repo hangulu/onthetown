@@ -57,15 +57,38 @@ class Party:
         response = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters)
         data = response.json()
 
+
         try:
             next_page_token = data["next_page_token"]
-            print next_page_token
+            while next_page_token:
+                parameters2 = {"pagetoken" : next_page_token, "key" : APIKEY}
+                response2 = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters2)
+                data2 = response2.json()
+                try:
+                    next_page_token = data2["next_page_token"]
+                except:
+                    next_page_token = None
+
+                for place in data2["results"]:
+                    name = place["name"] if "name" in place else None
+                    price = place["price_level"] if "price_level" in place else None
+                    rating = place["rating"] if "rating" in place else None
+                    location = place["geometry"]["location"]["lat"], place["geometry"]["location"]["lng"]
+                    address = place["vicinity"] if "vicinity" in place else None
+                    types = [str(type) for type in place["types"]] if "types" in place else None
+
+                    dict2 = {"name": name, # each place is its own dict for easy access to what you're looking for
+                            "price": price,
+                            "rating": rating,
+                            "location": location,
+                            "address": address,
+                            "types": types}
+
+                    if dict2 not in self.places:
+                        self.places.append(dict2)
         except:
             pass
 
-        if type == "restaurant":
-            print "restaurant count", len(data["results"])
-        # print type, "Used cache?", response.from_cache
         for place in data["results"]:
             name = place["name"] if "name" in place else None
             price = place["price_level"] if "price_level" in place else None
@@ -126,7 +149,7 @@ party1.findCenter()
 print party1.center
 
 for type in googleTypes.googleTypes:
-    party1.searchLocation(type, 500)
+    party1.searchLocation(type, 5000)
 
 print len(party1.places)
 
