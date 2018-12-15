@@ -76,8 +76,8 @@ class Party:
 
                 for place in data2["results"]:
                     name = place["name"] if "name" in place else None
-                    price = place["price_level"] if "price_level" in place else None
-                    rating = place["rating"] if "rating" in place else None
+                    price = place["price_level"] if "price_level" in place else 2
+                    rating = place["rating"] if "rating" in place else 3
                     location = place["geometry"]["location"]["lat"], place["geometry"]["location"]["lng"]
                     address = place["vicinity"] if "vicinity" in place else None
                     types = [str(type) for type in place["types"]] if "types" in place else None
@@ -96,8 +96,8 @@ class Party:
 
         for place in data["results"]:
             name = place["name"] if "name" in place else None
-            price = place["price_level"] if "price_level" in place else None
-            rating = place["rating"] if "rating" in place else None
+            price = place["price_level"] if "price_level" in place else 2
+            rating = place["rating"] if "rating" in place else 3
             location = place["geometry"]["location"]["lat"], place["geometry"]["location"]["lng"]
             address = place["vicinity"] if "vicinity" in place else None
             types = [str(type) for type in place["types"]] if "types" in place else None
