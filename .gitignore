@@ -2,3 +2,4 @@ config.py
 config.pyc
 center.pyc
 googleTypes.pyc
+googleAPICache.sqlite
