@@ -128,7 +128,10 @@ class Party:
 
     def updateAll(self):
         self.places = []
-        self.updatePlaces()
+        rad = 0
+        for i in range(10):
+            rad += 500
+            self.updatePlaces(rad)
         self.filterList()
 
 # tests dont work together for some reason the second keeps data from the first but we can fix that later!
@@ -146,10 +149,13 @@ class Party:
 # print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
 # test 2
 party1 = Party()
-hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 0, "bar")
-louie1 = User("Louie", 40.709013, -74.013692, 4, 0, "restaurant")
-amadou1 = User("Amadou", 40.773585, -73.936027, 4, 0, "night_club")
+hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 5, "bar")
+louie1 = User("Louie", 40.709013, -74.013692, 4, 4, "restaurant")
+amadou1 = User("Amadou", 40.773585, -73.936027, 4, 4, "night_club")
 party1.addToParty(hakeem1)
 party1.addToParty(louie1)
 party1.addToParty(amadou1)
 party1.updateAll()
+
+print "filter", len(party1.places)
+print "filter", len(party1.filteredPlaces)
