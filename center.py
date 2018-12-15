@@ -55,7 +55,7 @@ class Party:
         response = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters)
         data = response.json()
 
-        print type, "Used cache?", response.from_cache
+        #print type, "Used cache?", response.from_cache
 
         for place in data["results"]:
             name = place["name"] if "name" in place else None
@@ -74,6 +74,7 @@ class Party:
 
             if dict not in self.places:
                 self.places.append(dict)
+
 
 
 # tests dont work together for some reason the second keeps data from the first but we can fix that later!
@@ -104,3 +105,20 @@ for type in googleTypes.googleTypes:
     party1.searchLocation(type)
 
 print len(party1.places)
+
+def getDist(user, party, place):
+    return (m.sqrt((user.location[0]-place["location"][0])**2+(user.location[1]-place["location"][1])**2) - m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2))/m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2)
+
+def sadnessFunction(place, party):
+    weights = {"type" : 1, "price" : 1, "rating" : 1, "dist" : 1}
+    sadness = {}
+    for user in party.users:
+        sadness[user.name] = 0
+        dist = getDist(user, party, place)
+        if dist > 0:
+            sadness[user.name] += dist * weights["dist"]
+
+    print(sadness)
+
+
+sadnessFunction(party1.places[1], party1)
