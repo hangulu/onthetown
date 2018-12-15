@@ -45,18 +45,23 @@ class Party:
             y += user.location[1]/len(self.users)
 
         self.center = (x, y)
+        print "The center of the users is", self.center
 
     def addToParty(self, user):
         if not self.users:
             user.organizer = True
+            print user.name + " is the organizer of the party"
         self.users.append(user)
+        print user.name + " has been added to the party"
+        self.findCenter()
+
+
 
     def searchLocation(self, type="", radius=5000):
         APIKEY = config.api_key
         parameters = {"location": str(self.center[0])+","+str(self.center[1]),"radius":radius, "type":type,"key":APIKEY}
         response = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters)
         data = response.json()
-
 
         try:
             next_page_token = data["next_page_token"]
@@ -107,6 +112,9 @@ class Party:
             if dict not in self.places:
                 self.places.append(dict)
 
+    def updatePlaces(self, radius = 5000):
+        for type in googleTypes.googleTypes:
+            self.searchLocation(type, radius)
 
     def filterList(self):
         filteredList = []
@@ -118,9 +126,13 @@ class Party:
                             filteredList.append(place)
         self.filteredPlaces = filteredList
 
+    def updateAll(self):
+        self.places = []
+        self.updatePlaces()
+        self.filterList()
 
 # tests dont work together for some reason the second keeps data from the first but we can fix that later!
-print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
+# print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
 # party = Party()
 # hakeem = User(42.3736, -71.1097)
 # louie = User(40.7128, -74.0060)
@@ -131,33 +143,13 @@ print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
 #
 # print party.findCenter()
 
-print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
-
+# print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
+# test 2
 party1 = Party()
-print party1
 hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 0, "bar")
 louie1 = User("Louie", 40.709013, -74.013692, 4, 0, "restaurant")
 amadou1 = User("Amadou", 40.773585, -73.936027, 4, 0, "night_club")
 party1.addToParty(hakeem1)
-print party1
 party1.addToParty(louie1)
-print party1
 party1.addToParty(amadou1)
-print party1
-party1.findCenter()
-
-print party1.center
-
-for type in googleTypes.googleTypes:
-    party1.searchLocation(type, 5000)
-
-print len(party1.places)
-
-party1.filterList()
-print len(party1.filteredPlaces)
-
-# count = 0
-# for place in party1.places:
-#     if "restaurant" in place["types"]:
-#         count += 1
-# print "restaurant count", count
+party1.updateAll()
