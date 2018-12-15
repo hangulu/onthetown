@@ -62,7 +62,7 @@ class Party:
         parameters = {"location": str(self.center[0])+","+str(self.center[1]),"radius":radius, "type":type,"key":APIKEY}
         response = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters)
         data = response.json()
-
+        
         try:
             next_page_token = data["next_page_token"]
             while next_page_token:
