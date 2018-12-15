@@ -1,9 +1,11 @@
 import config # make a config.py with an api_key from google places
 import googleTypes # a list of all the searcheable google types
 import math as m
+import numpy as np
 import requests
 import requests_cache
 import urllib, json
+
 
 requests_cache.install_cache('googleAPICache') # cache searches for tests to not waste api calls
 
@@ -55,14 +57,12 @@ class Party:
         print user.name + " has been added to the party"
         self.findCenter()
 
-
-
     def searchLocation(self, type="", radius=5000):
         APIKEY = config.api_key
         parameters = {"location": str(self.center[0])+","+str(self.center[1]),"radius":radius, "type":type,"key":APIKEY}
         response = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters)
         data = response.json()
-        
+
         try:
             next_page_token = data["next_page_token"]
             while next_page_token:
@@ -135,6 +135,58 @@ class Party:
             self.updatePlaces(rad)
         self.filterList()
 
+    def similarity(self, event, places):
+        newList = []
+        for place in places:
+            similarity = 0
+            if place["price"] == event["price"]:
+                similarity += 1.
+            for type1 in event["types"]:
+                for type2 in place["types"]:
+                    if type1 == type2:
+                        similarity += 1.0/float(len(place["types"]))
+            if similarity <= 1.7:
+                newList.append(place)
+        return newList
+
+    def getDist(self, user, party, place):
+        return (m.sqrt((user.location[0]-place["location"][0])**2+(user.location[1]-place["location"][1])**2) - m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2))/m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2)
+
+    def sadnessFunction(self, place, party):
+        weights = {"type" : 1, "price" : 1, "rating" : 1, "dist" : 1}
+        sadness = {}
+        print place
+        for user in party.users:
+            sadness[user.name] = 0
+
+            dist = self.getDist(user, party, place)
+            if dist > 0:
+                sadness[user.name] += dist * weights["dist"]
+            print user.name, "dist = ", dist
+
+            rating = user.ratingPref - place["rating"]
+            if rating > 0:
+                sadness[user.name] += rating * weights["rating"]
+            print user.name, "rating = ", rating
+
+            price = float(place["price"] - user.pricePref)/4
+            if price > 0:
+                sadness[user.name] += price * weights["price"]
+            print user.name, "price = ", price
+
+            type = 0
+            for event in user.eventPref:
+                if event not in place["types"]:
+                    type += 1
+            if type == len(user.eventPref):
+                type = 1
+            else:
+                type = type/(2*len(user.eventPref))
+            sadness[user.name] += type
+            print user.name, "type = ", type
+
+        print(sadness)
+
 # tests dont work together for some reason the second keeps data from the first but we can fix that later!
 # print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
 # party = Party()
@@ -166,3 +218,16 @@ for place in party1.filteredPlaces:
     if place["price"] == None or place["rating"] == None:
         count += 1
 print "count", count
+
+# test for similarity fumction
+list = party1.filteredPlaces
+randEvent = np.random.choice(list)
+newList = party1.similarity(randEvent, party1.filteredPlaces)
+for i in range(10):
+    print len(newList)
+    list = newList
+    randEvent = np.random.choice(list)
+    newList = party1.similarity(randEvent, list)
+
+# test for sadness function
+party1.sadnessFunction(np.random.choice(party1.filteredPlaces), party1)
