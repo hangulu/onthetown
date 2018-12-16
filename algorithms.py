@@ -38,7 +38,8 @@ class Algorithm:
         solution. In the social plannnig case, the search problem is the
         list of viable options for an activity, and the object returned is
         a list of the "best" 7.
-        problem (list): List of viable options.
+        problem (Party object): An object containing information about a
+        potential meetup
 
         return: Tuple of a list of the best 7 options for an activity and
         the total sadness associated with that list
@@ -50,7 +51,8 @@ class Algorithm:
         # cost stores the total sadness of the current tree
         cost = 0
         # The starting state is the first of the full list of activities returned # from the Google search
-        start = problem[0]
+        filtered_list = party.filteredPlaces
+        start = filtered_list[0]
 
         # If it is uniform cost search, include the extra parameter for cost.
         # Push the first state to the data structure.
@@ -84,13 +86,14 @@ class Algorithm:
                 visited.append(event)
                 # Add the successors of the place to the data structure.
                 # for successor in problem.getSuccessors(state):
-                for successor in center.similarity(event, problem):
-                    sadness =
+                for successor in center.similarity(event, filtered_list):
+                    sadness = successor["sadness"]
+                    succ_cost = sum(sadness) + max(sadness)
                     # Let previous store all the previous places
                     if ucs:
-                        dstruct.push((successor, previous + [successor], cost + sadness), cost + sadness)
+                        dstruct.push((successor, previous + [successor], cost + succ_cost), cost + succ_cost)
                     else:
-                        dstruct.push(successor, previous + [successor], cost + sadness)
+                        dstruct.push(successor, previous + [successor], cost + succ_cost)
 
 # The following are the classes for the data structures
 class Stack:

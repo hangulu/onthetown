@@ -156,7 +156,7 @@ class Party:
         to see if an event in the total places list satisfies at least one persons
         preferences and adds it to the list of filtered.
 
-        This allows us to remove unnecesary seatches through events that would
+        This allows us to remove unnecesary searches through events that would
         provide no utility to any user.
         """
         filteredList = []
