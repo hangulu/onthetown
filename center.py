@@ -30,14 +30,12 @@ class Party:
     This holds the data about a given group of users including their center,
     filtered list, etc, used to find the best events.
     """
-    def __init__(self, users = []):
+    def __init__(self):
         """
         Party is initialized with the list of users at first if it is given,
         otherwise it is null.
         """
-        self.users = users
-        if users:
-            self.users[0].organizer = True
+        self.users = []
         self.center = None
         self.places = []
 
@@ -270,16 +268,18 @@ class Party:
 # tests dont work together for some reason the second keeps data from the first but we can fix that later!
 # print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
 # party = Party()
-# hakeem = User(42.3736, -71.1097)
-# louie = User(40.7128, -74.0060)
-# amadou = User(41.9645, -73.4408)
+# hakeem = User("Hakeem", 40.807835, -73.963957, 4, 5, ["bar", "restaurant"])
+# louie = User("Louie", 40.709013, -74.013692, 3, 4, ["restaurant", "movie"])
+# amadou = User("Amadou", 40.773585, -73.936027, 2, 3, ["night_club", "bar", "restaurant"])
 # party.addToParty(hakeem)
 # party.addToParty(louie)
 # party.addToParty(amadou)
-#
-# print party.findCenter()
+# party.updateAll()
+# print len(party.places)
+# print "filtered", len(party.filteredPlaces)
 
-# print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
+
+print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
 # test 2
 party1 = Party()
 hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 5, ["bar", "restaurant"])
