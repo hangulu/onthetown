@@ -38,59 +38,59 @@ class Algorithm:
         solution. In the social plannnig case, the search problem is the
         list of viable options for an activity, and the object returned is
         a list of the "best" 7.
-        problem (search object): List of viable options.
+        problem (list): List of viable options.
 
         return: Tuple of a list of the best 7 options for an activity and
         the total sadness associated with that list
         """
-    # Initialize variables to store visited states, the cost, and
-    # the starting state
-    # visited stores the places that have already been visited
-    visited = []
-    # cost stores the total sadness of the current tree
-    cost = 0
-    # The starting state is the first of the full list of activities returned # from the Google search
-    start = problem[0]
+        # Initialize variables to store visited states, the cost, and
+        # the starting state
+        # visited stores the places that have already been visited
+        visited = []
+        # cost stores the total sadness of the current tree
+        cost = 0
+        # The starting state is the first of the full list of activities returned # from the Google search
+        start = problem[0]
 
-    # If it is uniform cost search, include the extra parameter for cost.
-    # Push the first state to the data structure.
-    if self.type == "dfs":
-        dstruct = Stack()
-    elif self.type == "bfs":
-        dstruct = Queue()
-    elif self.type == "astar":
-        dstruct = PriorityQueueWithFunction(self.heuristic)
-    dstruct.push((start, [], cost))
+        # If it is uniform cost search, include the extra parameter for cost.
+        # Push the first state to the data structure.
+        if self.type == "dfs":
+            dstruct = Stack()
+        elif self.type == "bfs":
+            dstruct = Queue()
+        elif self.type == "astar":
+            dstruct = PriorityQueueWithFunction(self.heuristic)
+        dstruct.push((start, [], cost))
 
-    if self.type == "ucs":
-        dstruct = PriorityQueue()
-        dstruct.push((start, [], cost), cost)
+        if self.type == "ucs":
+            dstruct = PriorityQueue()
+            dstruct.push((start, [], cost), cost)
 
-    # Iterate through the entire data structure.
-    while not dstruct.isEmpty():
-        # Deconstruct the tuple created by getSuccessors.
-        # A "successor" is a member of the list of places deemed dissimilar
-        # from the current node. That list is generated from the similarity
-        # function applied to the current node and the full list of places
-        # returned from the Google API call
-        event, previous, cost = dstruct.pop()
+        # Iterate through the entire data structure.
+        while not dstruct.isEmpty():
+            # Deconstruct the tuple created by getSuccessors.
+            # A "successor" is a member of the list of places deemed dissimilar
+            # from the current node. That list is generated from the similarity
+            # function applied to the current node and the full list of places
+            # returned from the Google API call
+            event, previous, cost = dstruct.pop()
 
-        # Perhaps something like the below to return
-        if len(previous) == 7:
-            return previous, cost
+            # Perhaps something like the below to return
+            if len(previous) == 7:
+                return previous, cost
 
-        # Check if the current place has been visited before.
-        if event not in visited:
-            visited.append(event)
-            # Add the successors of the place to the data structure.
-            # for successor in problem.getSuccessors(state):
-            for successor in center.similarity(event, places):
-                # Let previous store all the previous places
-                if ucs:
-                    # The
-                    dstruct.push((successor, previous + [successor], cost + sadness), cost + sadness)
-                else:
-                    dstruct.push(successor, previous + [successor], cost + sadness)
+            # Check if the current place has been visited before.
+            if event not in visited:
+                visited.append(event)
+                # Add the successors of the place to the data structure.
+                # for successor in problem.getSuccessors(state):
+                for successor in center.similarity(event, problem):
+                    sadness =
+                    # Let previous store all the previous places
+                    if ucs:
+                        dstruct.push((successor, previous + [successor], cost + sadness), cost + sadness)
+                    else:
+                        dstruct.push(successor, previous + [successor], cost + sadness)
 
 # The following are the classes for the data structures
 class Stack:

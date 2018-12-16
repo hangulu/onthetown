@@ -184,31 +184,9 @@ class Party:
         self.filterList()
         self.assignSadness()
 
-    def similarity(self, event, places):
-        """
-        This is a funtion that tests out the similarity of a given event to the
-        rest of the list and filters the events that are too similar, outputing
-        a list of events that are different the a selected event.
-
-        This is going to be used in the search tree, i.e. if a variable is chosen
-        we want to have a domain of dissimilar options for the next choice.
-        """
-        newList = []
-        for place in places:
-            similarity = 0
-            if place["price"] == event["price"]:
-                similarity += 1.
-            for type1 in event["types"]:
-                for type2 in place["types"]:
-                    if type1 == type2:
-                        similarity += 1.0/float(len(place["types"]))
-            if similarity <= 1.67:
-                newList.append(place)
-        return newList
-
     def getDist(self, user, party, place):
         """
-        Calculates the % distance fthat a user must travel to the location, vs.
+        Calculates the % distance that a user must travel to the location, vs.
         the geographical center which is the most fair.
 
         If this is greater than 0, the user must travel more to go to go to the
@@ -263,6 +241,28 @@ class Party:
         for place in self.filteredPlaces:
             sadness = self.sadnessFunction(place, self)
             place["sadness"] = sadness
+
+def similarity(event, places):
+    """
+    This is a funtion that tests out the similarity of a given event to the
+    rest of the list and filters the events that are too similar, outputing
+    a list of events that are different the a selected event.
+
+    This is going to be used in the search tree, i.e. if a variable is chosen
+    we want to have a domain of dissimilar options for the next choice.
+    """
+    newList = []
+    for place in places:
+        similarity = 0
+        if place["price"] == event["price"]:
+            similarity += 1.
+        for type1 in event["types"]:
+            for type2 in place["types"]:
+                if type1 == type2:
+                    similarity += 1.0/float(len(place["types"]))
+        if similarity <= 1.67:
+            newList.append(place)
+    return newList
 
 
 # tests dont work together for some reason the second keeps data from the first but we can fix that later!
