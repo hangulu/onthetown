@@ -62,7 +62,7 @@ class Party:
         parameters = {"location": str(self.center[0])+","+str(self.center[1]),"radius":radius, "type":type,"key":APIKEY}
         response = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params=parameters)
         data = response.json()
-        
+
         try:
             next_page_token = data["next_page_token"]
             while next_page_token:
@@ -150,12 +150,18 @@ class Party:
 # print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
 # test 2
 party1 = Party()
-hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 5, ["bar"])
-louie1 = User("Louie", 40.709013, -74.013692, 4, 4, ["restaurant"])
-amadou1 = User("Amadou", 40.773585, -73.936027, 4, 4, ["night_club"])
+hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 5, ["bar", "restaurant"])
+louie1 = User("Louie", 40.709013, -74.013692, 3, 4, ["restaurant", "movie"])
+amadou1 = User("Amadou", 40.773585, -73.936027, 2, 3, ["night_club", "bar", "restaurant"])
+hakeem2 = User("Hakeem", 40.807835, -73.963957, 1, 3, ["bar", "movie"])
+louie2 = User("Louie", 40.709013, -74.013692, 2, 4, ["restaurant", "bar"])
+amadou2 = User("Amadou", 40.773585, -73.936027, 3, 5, ["night_club", "bar"])
 party1.addToParty(hakeem1)
 party1.addToParty(louie1)
 party1.addToParty(amadou1)
+party1.addToParty(hakeem2)
+party1.addToParty(louie2)
+party1.addToParty(amadou2)
 party1.updateAll()
 
 print len(party1.places)
