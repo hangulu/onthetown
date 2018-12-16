@@ -8,6 +8,5 @@ To do (in order of importance):
   ⁃DFS
   ⁃A*
 ⁃Design and implement an evaluation function for the above algorithms (sum of sadness over list)
-⁃Comment code
 ⁃Write paper
 ⁃Design and implement a simple UI
