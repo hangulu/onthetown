@@ -11,29 +11,55 @@ This module implements these algorithms as a class, as well as their
 supporting data structures.
 """
 
+import center
+import heapq, random
+
 class Algorithm:
     """
     A container for different types of search algorithms.
     """
 
     def __init__(self, type, cost_fn, heuristic):
+        """
+        Initialize the Algorithm class.
+        type (string): A string denoting the type of algorithm. Either dfs,
+        bfs, ucs, greedy, or astar.
+        cost_fn (function): The cost function for the algorithm. For the
+        social planning case, this is the sadness function.
+        heuristic (function): The heuristic used for A* search.
+        """
         self.type = type
         self.cost_fn = cost_fn
         self.heuristic = heuristic
 
     def search(self, problem):
-    # Initialize variables to store visited states, the cost, and the starting state
-    visited = []
-    cost = 0
-    start = problem.getStartState() # change this
+        """
+        The search algorithm. Takes in a search problem and returns a
+        solution. In the social plannnig case, the search problem is the
+        list of viable options for an activity, and the object returned is
+        a list of the "best" 7.
+        problem (search object): List of viable options.
 
-    # If it is uniform cost search, include the extra parameter for cost. Push the first state to the data structure.
+        return: Tuple of a list of the best 7 options for an activity and
+        the total sadness associated with that list
+        """
+    # Initialize variables to store visited states, the cost, and
+    # the starting state
+    # visited stores the places that have already been visited
+    visited = []
+    # cost stores the total sadness of the current tree
+    cost = 0
+    # The starting state is the first of the full list of activities returned # from the Google search
+    start = problem[0]
+
+    # If it is uniform cost search, include the extra parameter for cost.
+    # Push the first state to the data structure.
     if self.type == "dfs":
         dstruct = Stack()
     elif self.type == "bfs":
         dstruct = Queue()
     elif self.type == "astar":
-        dstruct = PriorityQueueWithFunction(heuristic) # include heuristic
+        dstruct = PriorityQueueWithFunction(self.heuristic)
     dstruct.push((start, [], cost))
 
     if self.type == "ucs":
@@ -43,63 +69,28 @@ class Algorithm:
     # Iterate through the entire data structure.
     while not dstruct.isEmpty():
         # Deconstruct the tuple created by getSuccessors.
-        # We have to redo this, based on how we consider successors
-        state, direction, cost = dstruct.pop()
-        # Check if the goal state is the current state.
-        # Check if we have the desired number of states
-        if problem.isGoalState(state):
-            return direction
-        # Perhaps something like the below
-        if len(problem) == 7:
-            return problem
-        # Check if the current state has been visited before.
-        if state not in visited:
-            visited.append(state)
-            # Add the successors of the state to the data structure.
-            for successor in problem.getSuccessors(state):
-                # Need to work on succession. Will come after more algorithms talk
-                # Let direction store all the directions to the state.
-                if ucs:
-                    dstruct.push((successor[0], direction + [successor[1]], cost + successor[2]), cost + successor[2])
-                else:
-                    dstruct.push((successor[0], direction + [successor[1]], cost + successor[2]))
+        # A "successor" is a member of the list of places deemed dissimilar
+        # from the current node. That list is generated from the similarity
+        # function applied to the current node and the full list of places
+        # returned from the Google API call
+        event, previous, cost = dstruct.pop()
 
-    # The behavior below has been abstracted above, using the "type" attribute of the Algorithm class
-    # def dfs(problem):
-    #     """
-    #     Search the deepest nodes in the search tree first.
-    #     """
-    #     # Run the search with a stack.
-    #     return search(problem, util.Stack())
-    #
-    # def bfs(problem):
-    #     """
-    #     Search the shallowest nodes in the search tree first.
-    #     """
-    #     # Run the search with a queue.
-    #     return search(problem, util.Queue())
-    #
-    # def ucs(problem):
-    #     """
-    #     Search the node of least total cost first.
-    #     """
-    #     # Run the search with a priority queue.
-    #     return search(problem, util.PriorityQueue(), ucs=True)
-    #
-    # def nullHeuristic(state, problem=None):
-    #     """
-    #     A heuristic function estimates the cost from the current state to the nearest goal in the provided SearchProblem. This heuristic is trivial.
-    #     """
-    #     return 0
-    #
-    # def aStarSearch(problem, heuristic=nullHeuristic):
-    #     """
-    #     Search the node that has the lowest combined cost and heuristic first.
-    #     """
-    #     # Create the heuristic function, then run using the genericSearch
-    #     def composite(currentState):
-    #         return heuristic(currentState[0], problem) + currentState[2]
-    #     return search(problem, util.PriorityQueueWithFunction(composite))
+        # Perhaps something like the below to return
+        if len(previous) == 7:
+            return previous, cost
+
+        # Check if the current place has been visited before.
+        if event not in visited:
+            visited.append(event)
+            # Add the successors of the place to the data structure.
+            # for successor in problem.getSuccessors(state):
+            for successor in center.similarity(event, places):
+                # Let previous store all the previous places
+                if ucs:
+                    # The
+                    dstruct.push((successor, previous + [successor], cost + sadness), cost + sadness)
+                else:
+                    dstruct.push(successor, previous + [successor], cost + sadness)
 
 # The following are the classes for the data structures
 class Stack:
@@ -192,3 +183,20 @@ class PriorityQueueWithFunction(PriorityQueue):
     def push(self, item):
         "Adds an item to the queue with priority from the priority function"
         PriorityQueue.push(self, item, self.priorityFunction(item))
+
+def astar_heuristic(state):
+    """
+    Takes in a state (a triple of current place, all places before the current
+    place, and the total cost associated with the current place) and applies a
+    heuristic to it for A* search.
+    state (triple): (current place, all places before the current
+    place, the total cost associated with the current place)
+
+    return: integer that approximates distance from the goal
+    """
+    # Encode the progress to the goal as the length of the list of previous states
+    progress = len(state[1])
+    # Goal distance is the number of places left to be added multiplied by
+    # the average of the sadness value to the current point
+    goal_distance = (7 - progress) * state[2] / progress
+    return goal_distance
