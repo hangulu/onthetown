@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Plan An Event
+{% endblock %}
+
+{% set name_var = name %}
+{% set dashed = True %}
+
+{% block main %}
+      <div class="row marketing">
+        <div class="jumbotron">
+          <h3>{{ named_gathering }}</h3>
+          <h4>ott.com/{{ link }}</h4>
+          <br>
+          <h4>The following people are in the party:</h4>
+          <table class="table leftalign">
+            <tr>
+              <th class="c1">Name</th>
+              <th class="c2">Email</th>
+              <th class="c3">Activity</th>
+              <th class="c4">Price</th>
+              <th class="c5">Rating</th>
+              <th class="c6">Location</th>
+            {% for user in party %}
+            <tr>
+               <td class="c1">{{ user.name }}</td>
+               <td class="c2">{{ user.email }}</td>
+               <td class="c3">
+                 {% for i in range(user.act_pref|length) %}
+                 {% if i == (user.act_pref|length - 1) %}
+                   {{ user.act_pref[i]}}
+                 {% else %}
+                   {{ user.act_pref[i] + ", " }}
+                 {% endif %}
+               {% endfor %}
+               </td>
+               <td class="c4">{{ user.price_pref }}</td>
+               <td class="c5">{{ user.rating_pref }}</td>
+               <td class="c6">{{ user.location }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          <form action="{{ url_for('solution', c_link=link) }}" method="post">
+            <input type="submit" class="btn btn-info btn-lg" value="Let's Go Out!" />
+          </form>
+        </div>
+      </div>
+  {% endblock %}
