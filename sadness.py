@@ -2,6 +2,7 @@ import center
 import math as m
 import numpy as np
 
+# Return additional travel percentage to chosen location relative to assigned center location
 def getDist(user, party, place):
     return (m.sqrt((user.location[0]-place["location"][0])**2+(user.location[1]-place["location"][1])**2) - m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2))/m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2)
 

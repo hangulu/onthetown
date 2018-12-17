@@ -20,8 +20,8 @@ class User:
         self.eventPref = eventPref
 
 class Party:
-    def __init__(self, users = []):
-        self.users = users
+    def __init__(self):
+        self.users = []
         self.center = None
         self.places = []
 
@@ -47,14 +47,14 @@ class Party:
             y += user.location[1]/len(self.users)
 
         self.center = (x, y)
-        print "The center of the users is", self.center
+        # print "The center of the users is", self.center
 
     def addToParty(self, user):
         if not self.users:
             user.organizer = True
-            print user.name + " is the organizer of the party"
+            # print user.name + " is the organizer of the party"
         self.users.append(user)
-        print user.name + " has been added to the party"
+        # print user.name + " has been added to the party"
         self.findCenter()
 
     def searchLocation(self, type="", radius=5000):
@@ -130,9 +130,10 @@ class Party:
     def updateAll(self):
         self.places = []
         rad = 0
-        for i in range(10):
-            rad += 500
-            self.updatePlaces(rad)
+        # for i in range(10):
+        #     rad += 500
+        #     self.updatePlaces(rad)
+        self.updatePlaces()
         self.filterList()
 
     def similarity(self, event, places):
@@ -152,40 +153,40 @@ class Party:
     def getDist(self, user, party, place):
         return (m.sqrt((user.location[0]-place["location"][0])**2+(user.location[1]-place["location"][1])**2) - m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2))/m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2)
 
-    def sadnessFunction(self, place, party):
-        weights = {"type" : 1, "price" : 1, "rating" : 1, "dist" : 1}
-        sadness = {}
-        print place
-        for user in party.users:
-            sadness[user.name] = 0
-
-            dist = self.getDist(user, party, place)
-            if dist > 0:
-                sadness[user.name] += dist * weights["dist"]
-            print user.name, "dist = ", dist
-
-            rating = user.ratingPref - place["rating"]
-            if rating > 0:
-                sadness[user.name] += rating * weights["rating"]
-            print user.name, "rating = ", rating
-
-            price = float(place["price"] - user.pricePref)/4
-            if price > 0:
-                sadness[user.name] += price * weights["price"]
-            print user.name, "price = ", price
-
-            type = 0
-            for event in user.eventPref:
-                if event not in place["types"]:
-                    type += 1
-            if type == len(user.eventPref):
-                type = 1
-            else:
-                type = type/(2*len(user.eventPref))
-            sadness[user.name] += type
-            print user.name, "type = ", type
-
-        print(sadness)
+    # def sadnessFunction(self, place, party):
+    #     weights = {"type" : 1, "price" : 1, "rating" : 1, "dist" : 1}
+    #     sadness = []
+    #     print place
+    #     for user in party.users:
+    #         sadness = 0
+    #
+    #         dist = self.getDist(user, party, place)
+    #         if dist > 0:
+    #             sadness[user.name] += dist * weights["dist"]
+    #         print user.name, "dist = ", dist
+    #
+    #         rating = user.ratingPref - place["rating"]
+    #         if rating > 0:
+    #             sadness[user.name] += rating * weights["rating"]
+    #         print user.name, "rating = ", rating
+    #
+    #         price = float(place["price"] - user.pricePref)/4
+    #         if price > 0:
+    #             sadness[user.name] += price * weights["price"]
+    #         print user.name, "price = ", price
+    #
+    #         type = 0
+    #         for event in user.eventPref:
+    #             if event not in place["types"]:
+    #                 type += 1
+    #         if type == len(user.eventPref):
+    #             type = 1
+    #         else:
+    #             type = type/(2*len(user.eventPref))
+    #         sadness[user.name] += type
+    #         print user.name, "type = ", type
+    #
+    #     print(sadness)
 
 # tests dont work together for some reason the second keeps data from the first but we can fix that later!
 # print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
@@ -226,14 +227,14 @@ for place in party1.filteredPlaces:
 print "count", count
 
 # test for similarity fumction
-list = party1.filteredPlaces
-randEvent = np.random.choice(list)
-newList = party1.similarity(randEvent, party1.filteredPlaces)
-for i in range(10):
-    print len(newList)
-    list = newList
-    randEvent = np.random.choice(list)
-    newList = party1.similarity(randEvent, list)
+# list = party1.filteredPlaces
+# randEvent = np.random.choice(list)
+# newList = party1.similarity(randEvent, party1.filteredPlaces)
+# for i in range(10):
+#     print len(newList)
+#     list = newList
+#     randEvent = np.random.choice(list)
+#     newList = party1.similarity(randEvent, list)
 
 # test for sadness function
-party1.sadnessFunction(np.random.choice(party1.filteredPlaces), party1)
+# party1.sadnessFunction(np.random.choice(party1.filteredPlaces), party1)
