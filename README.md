@@ -1,13 +1,47 @@
-# friendPlanner
+# On The Town: Social Planning As A Search Problem
 
-We want to create a web application that will primarily allow people in the same city, yet in different locations, to meet up in a location that is equidistant from all of the people using a number of factors to make the decision. These factors will include the distance from on another, the activity or event type that the people are interested in, the price range, and the modes of transportation that each person wants to take to meet up among other potential features.
+**On The Town** is a web application that allows people in the same city, yet in different locations, to meet up in a location that is relatively equidistant from all of the people, and also satisfies users' preferences for type of activity, budget, and rating.
 
-We are debating where we would actually create this for initially, but it will most likely be Boston or New York to start. We see high practicality for many different demographics, but also a means to apply our learned knowledge from CS182.
+Given a set of users spread out in various locations and information on venues and activities in a desired destinations, OTT optimizes the process of meeting up with those that you care about. The problem of social planning here is well encoded as a search problem. OTT uses a variety of search algorithms (including depth-first search, breadth-first search, uniform cost search, greedy search, and A* search) to output a list of 7 places that not only satisfy users' preferences, but are also diverse in their offerings. Thus, OTT gives users a useful and varied set of options to execute.
 
-Given a set of users spread out in various locations and information on venues and activities in a desired destinations, we aim to optimize the process of meeting up with those that you care about so that it is fair and best for all. This project will take a number of resources, but the main course related topic is the use of the constraint satisfaction problem. We are going to investigate which variants, backtracking, local search, arc consistency and so on, will be the best for this project at hand. We have already been delving into the tools that we will be utilizing and the ways in which we will incorporate both our learning and interests into the project.
+The following is an example of the expected behavior: imagine 6 friends scattered around New York City: uptown, downtown, midtown, etc. Based on the factors they decide, both through polls and preferences within their user profiles, OTT minimizes the distance that each will have to travel in order to satisfy their desires, while also satisfying other preferences and the goal of diversity. Given all of the users’ preferences, OTT outputs 7 locations. Then, the friends meet up and have a fun time!
 
-To give an example of the expected behavior, imagine 6 friends scattered around New York City: uptown, downtown, midtown, etc. We want to make sure that they can all reach the location at the right time to ensure that they are able to enjoy each other's company. Based on the factors they decide, potentially through a quick poll, or factors on their user profiles, we will minimize the distance that each will have to travel in order to satisfy their desires, while also satisfying the factors such as price, event type, and even the mode of transportation. Given all of the users’ preferences, the program will output a location meeting all of the constraints, how long it will take for each person to get there, and the best time to leave to make it on time. The friends meet up and a fun time commences! This is expected behavior if everything goes well. We can add how far or how long each person is willing to travel and adjust accordingly.
+The core features of this application rely on the [Google Places API](https://developers.google.com/places/web-service/intro), and [search algorithms](https://en.wikipedia.org/wiki/Search_algorithm). The stack is as follows:
 
-There are a few edge cases, for example the issue of the friends being in a very close proximity, it will simply become a search for a location satisfying their desires. This is not a huge issue to tackle, it may even simplify the CSP. The issue that we want to mainly focus on is a fast, efficient output of ways that friends can meet up at a location that they desire. We want to ensure that it is as equitable a process as possible, but also find the best constraint satisfaction algorithms to implement this web app.
+* Backend: Python, Flask, SQL
+* Frontend: HTML, JavaScript, CSS, Jinja2
 
-We have begun to look into various tools that we can use. The first are the API’s that we will use: ​Google Maps​, ​Massachusetts Bay Transportation Authority​ or ​New York MTA​, DarkSky Weather​, ​Facebook​ for profiles, among others. Our CSP algorithms will be based on those learned in class, but the resources we have begun to look into are those that try to satisfy the ​Uber carpooling problem​, and more applicable information on CSP’s such as specifically to planning and scheduling​ and ​a book on the same topic​.
+***
+
+### Installation
+
+OTT runs on [Python 2.7](https://www.python.org/download/releases/2.7/), and requires the following packages:
+* flask
+* flask-session
+* requests
+* werkzeug
+* requests-cache
+* redis
+
+There are two ways to install these dependencies:
+1. [Pipenv](https://pipenv.readthedocs.io/) [recommended]. Install Pipenv with `brew install Pipenv` if you're using Homebrew on MacOS or Linuxbrew on Linux, or `sudo dnf install pipenv` if you're using Fedora28. Otherwise, navigate [here](https://pipenv.readthedocs.io/en/latest/install/#installing-pipenv) for more instructions. Next, navigate to the root directory of this repository and run `pipenv install` to install all dependencies at once and create a virtual environment for the project.
+2. [pip](https://pip.pypa.io/en/stable/#). Download `pip` from with the following command in a Terminal window: `curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py`. Next, run `python get-pip.py`. Finally, navigate to the root directory of this repository and run `pip install -r requirements.txt` to install all dependencies at once.
+
+To initialize the database to store users' information:
+1. Ensure that you have deleted `users.db` in the `server/` directory.
+2. Run `db_init.py`
+3. Run `redis-server`
+
+Finally, to run the web application, run `python app.py` in a new Terminal window.
+
+***
+
+### Authors
+**Hakeem Angulu**, Harvard College Class of 2020
+[hangulu@college.harvard.edu](mailto:hangulu@college.harvard.edu)
+
+**Louie Ayre**, Harvard College Class of 2020
+[layre@college.harvard.edu](mailto:layre@college.harvard.edu)
+
+**Amadou Camara**, Harvard College Class of 2020
+[acamara@college.harvard.edu](mailto:acamara@college.harvard.edu)
