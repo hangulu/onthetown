@@ -30,6 +30,7 @@ def initialize(db_file):
 	# Create the users table
 	# Fields: name, email, password
 	conn.execute("CREATE TABLE users (email TEXT PRIMARY KEY, name TEXT, password TEXT)")
+	conn.execute("CREATE TABLE prefs (email TEXT PRIMARY KEY, activity TEXT, price INT, rating FLOAT, latitude FLOAT, longitude FLOAT)")
 
 if __name__ == "__main__":
     initialize("users.db")

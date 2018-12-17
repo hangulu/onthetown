@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>On The Town</title>
+    <title>OTT: {% block title %}{% endblock %}</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -17,7 +17,10 @@
         <nav>
           <ul class="nav nav-pills pull-right">
             <li role="presentation"><a href="/">Home</a></li>
-            {% if name_var %}
+            {% if name_var and dashed %}
+              <li role="presentation"><a href="/plan">Plan An Event</a></li>
+              <li role="presentation"><a href="/logout">Log Out</a></li>
+            {% elif name_var %}
               <li role="presentation"><a href="/logout">Log Out</a></li>
             {% else %}
               <li role="presentation"><a href="/login">Sign In</a></li>

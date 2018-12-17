@@ -5,18 +5,112 @@
 {% endblock %}
 
 {% set name_var = name %}
+{% set dashed = True %}
 
 {% block main %}
       <div class="row marketing">
-        <div class="col-lg-6">
-          <h4>Test</h4>
-          <p>Testy</p>
+        <div class="jumbotron">
+          <h3>Your Preferences</h3>
+          <h4>The following are your chosen preferences for events. If you've yet to set preferences, we've initialized them for you.</h4>
+          <p></p>
+          <p>Activity type: {{ prefs["activity"] }}</p>
+          <p>Price: {{ prefs["price"] }}</p>
+          <p>Rating: {{ prefs["rating"] }}</p>
+          <p>Location: {{ prefs["lat"] }}, {{ prefs["long"] }}</p>
 
-          <h4>Test</h4>
-          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+          <h4>If you'd like to update these preferences, please do so below, then click save.</h4>
 
-          <h4>Test</h4>
-          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+          {% if not recent_update %}
+
+          <form class="form-signin" action="/pref" method="post">
+          <div class="form-group form-group-lg">
+          <h5>Activity Type:</h5>
+          <label for="activity_type" class="sr-only">Activity Type</label>
+          <select class="form-control" name="activity_type" placeholder="Type of Activity" required autofocus>
+				    <option value="amusement_park">Amusement Park</option>
+						<option value="aquarium">Aquarium</option>
+						<option value="bakery">Bakery</option>
+						<option value="bar">Bar</option>
+						<option value="book_store">Book Store</option>
+						<option value="bowling_alley">Bowling Alley</option>
+            <option value="cafe">Cafe</option>
+						<option value="campground">Campground</option>
+						<option value="casino">Casino</option>
+						<option value="city_hall">City Hall</option>
+						<option value="clothing_store">Clothing Store</option>
+						<option value="department_store">Department Store</option>
+            <option value="electronics_store">Electronics Store</option>
+						<option value="florist">Florist</option>
+						<option value="gym">Gym</option>
+						<option value="jewelry_store">Jewelry Store</option>
+						<option value="library">Library</option>
+						<option value="liquor_store">Liquor Store</option>
+            <option value="lodging">Lodging</option>
+						<option value="meal_delivery">Meal Delivery</option>
+						<option value="meal_takeaway">Meal Takeaway</option>
+						<option value="movie_rental">Movie Rental</option>
+						<option value="movie_theater">Movie Theater</option>
+						<option value="museum">Museum</option>
+            <option value="night_club">Nightclub</option>
+						<option value="painter">Painter</option>
+						<option value="park">Park</option>
+						<option value="pet_store">Pet Store</option>
+						<option value="restaurant">Restaurant</option>
+						<option value="shoe_store">Shoe Store</option>
+            <option value="shopping_mall">Shopping Mall</option>
+						<option value="spa">Spa</option>
+						<option value="stadium">Stadium</option>
+						<option value="store">Store</option>
+						<option value="zoo">Zoo</option>
+				    </select>
+          </div>
+
+          <div class="form-group form-group-lg">
+          <h5>Price Preference:</h5>
+          <label for="price_pref" class="sr-only">Price</label>
+          <select class="form-control" name="price_pref" placeholder="Budget" required autofocus>
+				    <option value="0">0</option>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+				    </select>
+          </div>
+
+          <div class="form-group form-group-lg">
+          <h5>Rating Preference:</h5>
+          <label for="rating_pref" class="sr-only">Rating</label>
+          <select class="form-control" name="rating_pref" placeholder="Rating Preference" required autofocus>
+						<option value="1">1</option>
+						<option value="2">2</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+            <option value="5">5</option>
+				    </select>
+          </div>
+
+          <div class="form-group form-group-lg">
+          <h5>Location:</h5>
+          <label for="lat_location" class="sr-only">Location (latitude)</label>
+          <input type="text" name="lat_location" class="form-control" placeholder="Latitude" required>
+          <label for="long_location" class="sr-only">Location (longitude)</label>
+          <input type="text" name="long_location" class="form-control" placeholder="Longitude" required>
+          </div>
+
+          <button id="btnSignUp" class="btn btn-primary btn-block" type="submit">Save Preferences</button>
+
+          {% else %}
+
+          <h3>Updates Saved!</h3>
+
+          <form action="/pref">
+            <input type="submit" class="btn btn-info btn-sm" value="Update Preferences Again" />
+          </form>
+
+          {% endif %}
+
+          <br>
+          <a class="btn btn-success btn-lg" href="/plan" role="button">Plan An Event</a>
         </div>
       </div>
   {% endblock %}
