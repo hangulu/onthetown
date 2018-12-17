@@ -28,7 +28,8 @@ def get_preferences(email):
     """
     c = conn.cursor()
     # Extract the data
-    activity = c.execute("SELECT activity FROM prefs WHERE email = ?", (email, )).fetchone()[0]
+    serial_activity = c.execute("SELECT activity FROM prefs WHERE email = ?", (email, )).fetchone()[0]
+    activity = serial_activity.split("\0")
     price = c.execute("SELECT price FROM prefs WHERE email = ?", (email, )).fetchone()[0]
     rating = c.execute("SELECT rating FROM prefs WHERE email = ?", (email, )).fetchone()[0]
     latitude = c.execute("SELECT latitude FROM prefs WHERE email = ?", (email, )).fetchone()[0]
@@ -136,20 +137,14 @@ def log_prefs():
     if request.method == "POST":
         c =  conn.cursor()
         try:
-            # _activity_type = request.form["activity_type"]
-            # _price_pref = request.form["price_pref"]
-            # _rating_pref = request.form["rating_ref"]
-            # _lat_location = request.form["lat_location"]
-            # _long_location = request.form["long_location"]
-            _activity_type = request.form.get("activity_type", None)
+            act_checklist = request.form.getlist("act_check")
+            _activity_type = "\0".join(act_checklist)
             _price_pref = request.form.get("price_pref", None)
             _rating_pref = request.form.get("rating_pref", None)
             _lat_location = request.form.get("lat_location", None)
             _long_location = request.form.get("long_location", None)
 
             _email = session["email"]
-
-            #return json.dumps({'error': str(_activity_type) + str(_price_pref) + str(_rating_pref) + str(_lat_location) + str(_long_location)})
 
             # Validate the input
             if _activity_type and _price_pref and _rating_pref and  _lat_location and _long_location:
