@@ -1,3 +1,7 @@
+"""
+From the google places API, these are all of the potential searcheable types
+that we narrowed down to as relevant to our project.
+"""
 googleTypes = ["amusement_park",
         "aquarium",
         "art_gallery",
