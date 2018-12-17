@@ -309,12 +309,12 @@ print "count", count
 print "similarity function tests \n"
 list = party1.filteredPlaces
 randEvent = np.random.choice(list)
-newList = party1.similarity(randEvent, party1.filteredPlaces)
+newList = similarity(randEvent, party1.filteredPlaces)
 for i in range(7):
     print len(newList)
     list = newList
     randEvent = np.random.choice(list)
-    newList = party1.similarity(randEvent, list)
+    newList = similarity(randEvent, list)
 
 # test for sadness function
 print "random sadness function tests \n"
