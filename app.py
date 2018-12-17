@@ -163,5 +163,63 @@ def log_prefs():
     else:
         return render_template("dashboard.html", name=session["name"], prefs=get_preferences(session["email"]), recent_update=False)
 
+@app.route("/setup", methods=["POST", "GET"])
+def start_event():
+    if request.method == "POST":
+        c =  conn.cursor()
+        try:
+            named_gathering = request.form.get("name_event", None).replace(" ", "-")
+
+            _email = session["email"]
+            _name = session["name"].replace(" ", "").lower()
+            custom_link = _name + "-" + named_gathering
+
+            # Validate the input
+            if named_gathering:
+                users = [{"email": _email, "name": _name, "organizer": True}]
+                return render_template("setup.html", name=session["name"], named_gathering=named_gathering, link=custom_link, users=users)
+            else:
+                c.close()
+                return render_template("setup.html", name=session["name"])
+
+        except Exception as e:
+            return json.dumps({'error': str(e)})
+        finally:
+            c.close()
+    else:
+        return render_template("setup.html", name=session["name"])
+
+@app.route("/plan/<c_link>", methods=["POST", "GET"])
+def plan_event(c_link):
+    if request.method == "POST":
+        c =  conn.cursor()
+        try:
+            custom_link = c_link
+            named_gathering = c_link.split("-")[1]
+
+            _email = session["email"]
+            _name = session["name"]
+            _organizer = True
+
+            # Validate the input
+            if custom_link:
+                db_name = custom_link.replace("-", "")
+                create_query = "CREATE TABLE IF NOT EXISTS {} (email TEXT PRIMARY KEY, name TEXT, organizer BOOLEAN)".format(db_name)
+                upsert_query = "REPLACE INTO {} (email, name, organizer) VALUES (?, ?, ?)".format(db_name)
+                c.execute(create_query)
+                c.execute(upsert_query, (_email, _name, _organizer))
+                return render_template("setup.html", name=session["name"], named_gathering=named_gathering, link=custom_link)
+            else:
+                c.close()
+                return json.dumps({'error': str("not working")})
+                return render_template("setup.html", name=session["name"])
+
+        except Exception as e:
+            return json.dumps({'error': str(e)})
+        finally:
+            c.close()
+    else:
+        return render_template("setup.html", name=session["name"])
+
 if __name__ == "__main__":
     app.run(debug=True, use_reloader=True, port=5002)

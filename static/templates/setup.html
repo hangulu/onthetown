@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Plan An Event
+{% endblock %}
+
+{% set name_var = name %}
+{% set dashed = True %}
+
+{% block main %}
+      <div class="row marketing">
+        <div class="jumbotron">
+          {% if not named_gathering %}
+          <h3>What would you like to call your gathering?</h3>
+          <form class="form signin" action="/setup" method="post">
+            <div class="form-group">
+              <input type="text" class="form-control form-signin" name="name_event" placeholder="my awesome event">
+            </div>
+            <button id="btnSignUp" class="btn btn-primary" type="submit">Name This Event</button>
+          </form>
+
+          {% else %}
+          <h3>{{ named_gathering }}</h3>
+          <h4>Invite your friends by sending them this link:</h4>
+          <h2>ott.com/{{ link }}</h2>
+          <br>
+          <form action="{{ url_for('plan_event', c_link=link) }}" method="post">
+            <input type="submit" class="btn btn-info btn-lg" value="See My Party" />
+          </form>
+
+          {% endif %}
+        </div>
+      </div>
+  {% endblock %}
