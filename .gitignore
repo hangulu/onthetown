@@ -111,4 +111,4 @@ venv.bak/
 .mypy_cache/
 
 # MacOS files
-.DS_Store/
+.DS_Store
