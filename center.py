@@ -42,9 +42,6 @@ class User:
         self.eventPref = eventPref
 
 class Party:
-<<<<<<< HEAD
-    def __init__(self):
-=======
     """
     This holds the data about a given group of users including their center,
     filtered list, etc, used to find the best events.
@@ -57,7 +54,6 @@ class Party:
         center (tuple): Tuple of the center of all users' locations.
         places (list): A list of potential places.
         """
->>>>>>> dd3f0b7f9d7b2b54336addb793f5bda3609a2c0a
         self.users = []
         self.center = None
         self.places = []
@@ -92,11 +88,7 @@ class Party:
             y += user.location[1]/len(self.users) # latitudes
 
         self.center = (x, y)
-<<<<<<< HEAD
-        # print "The center of the users is", self.center
-=======
-        print "The center of the users is: ", self.center
->>>>>>> dd3f0b7f9d7b2b54336addb793f5bda3609a2c0a
+        # print "The center of the users is: ", self.center
 
     def addToParty(self, user):
         """
@@ -108,12 +100,8 @@ class Party:
             user.organizer = True
             # print user.name + " is the organizer of the party"
         self.users.append(user)
-<<<<<<< HEAD
         # print user.name + " has been added to the party"
-=======
-        print user.name + " has been added to the party"
         # Update the center
->>>>>>> dd3f0b7f9d7b2b54336addb793f5bda3609a2c0a
         self.findCenter()
 
     def searchLocation(self, type="", radius=5000):
@@ -210,117 +198,12 @@ class Party:
         to the party.
         """
         self.places = []
-        rad = 0
+        # rad = 0
         # for i in range(10):
         #     rad += 500
-        #     self.updatePlaces(rad)
+        self.updatePlaces(5000)
         self.updatePlaces()
         self.filterList()
-<<<<<<< HEAD
-
-    def similarity(self, event, places):
-        newList = []
-        for place in places:
-            similarity = 0
-            if place["price"] == event["price"]:
-                similarity += 1.
-            for type1 in event["types"]:
-                for type2 in place["types"]:
-                    if type1 == type2:
-                        similarity += 1.0/float(len(place["types"]))
-            if similarity <= 1.7:
-                newList.append(place)
-        return newList
-
-    def getDist(self, user, party, place):
-        return (m.sqrt((user.location[0]-place["location"][0])**2+(user.location[1]-place["location"][1])**2) - m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2))/m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2)
-
-    # def sadnessFunction(self, place, party):
-    #     weights = {"type" : 1, "price" : 1, "rating" : 1, "dist" : 1}
-    #     sadness = []
-    #     print place
-    #     for user in party.users:
-    #         sadness = 0
-    #
-    #         dist = self.getDist(user, party, place)
-    #         if dist > 0:
-    #             sadness[user.name] += dist * weights["dist"]
-    #         print user.name, "dist = ", dist
-    #
-    #         rating = user.ratingPref - place["rating"]
-    #         if rating > 0:
-    #             sadness[user.name] += rating * weights["rating"]
-    #         print user.name, "rating = ", rating
-    #
-    #         price = float(place["price"] - user.pricePref)/4
-    #         if price > 0:
-    #             sadness[user.name] += price * weights["price"]
-    #         print user.name, "price = ", price
-    #
-    #         type = 0
-    #         for event in user.eventPref:
-    #             if event not in place["types"]:
-    #                 type += 1
-    #         if type == len(user.eventPref):
-    #             type = 1
-    #         else:
-    #             type = type/(2*len(user.eventPref))
-    #         sadness[user.name] += type
-    #         print user.name, "type = ", type
-    #
-    #     print(sadness)
-
-# tests dont work together for some reason the second keeps data from the first but we can fix that later!
-# print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
-# party = Party()
-# hakeem = User(42.3736, -71.1097)
-# louie = User(40.7128, -74.0060)
-# amadou = User(41.9645, -73.4408)
-# party.addToParty(hakeem)
-# party.addToParty(louie)
-# party.addToParty(amadou)
-#
-# print party.findCenter()
-
-# print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
-# test 2
-party1 = Party()
-hakeem1 = User("Hakeem", 40.807835, -73.963957, 4, 5, ["bar", "restaurant"])
-louie1 = User("Louie", 40.709013, -74.013692, 3, 4, ["restaurant", "movie"])
-amadou1 = User("Amadou", 40.773585, -73.936027, 2, 3, ["night_club", "bar", "restaurant"])
-hakeem2 = User("Hakeem", 40.807835, -73.963957, 1, 3, ["bar", "movie"])
-louie2 = User("Louie", 40.709013, -74.013692, 2, 4, ["restaurant", "bar"])
-amadou2 = User("Amadou", 40.773585, -73.936027, 3, 5, ["night_club", "bar"])
-party1.addToParty(hakeem1)
-party1.addToParty(louie1)
-party1.addToParty(amadou1)
-party1.addToParty(hakeem2)
-party1.addToParty(louie2)
-party1.addToParty(amadou2)
-party1.updateAll()
-
-print len(party1.places)
-print "filtered", len(party1.filteredPlaces)
-
-count = 0
-for place in party1.filteredPlaces:
-    if place["price"] == None or place["rating"] == None:
-        count += 1
-print "count", count
-
-# test for similarity fumction
-# list = party1.filteredPlaces
-# randEvent = np.random.choice(list)
-# newList = party1.similarity(randEvent, party1.filteredPlaces)
-# for i in range(10):
-#     print len(newList)
-#     list = newList
-#     randEvent = np.random.choice(list)
-#     newList = party1.similarity(randEvent, list)
-
-# test for sadness function
-# party1.sadnessFunction(np.random.choice(party1.filteredPlaces), party1)
-=======
         self.assignSadness()
 
     def getDist(self, user, place):
@@ -421,4 +304,3 @@ def similarity(event, places):
         if similarity <= 1.67:
             dissimilar.append(place)
     return dissimilar
->>>>>>> dd3f0b7f9d7b2b54336addb793f5bda3609a2c0a

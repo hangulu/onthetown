@@ -8,9 +8,14 @@ def getDist(user, party, place):
     return (m.sqrt((user.location[0]-place["location"][0])**2+(user.location[1]-place["location"][1])**2) - m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2))
 
 # /m.sqrt((user.location[0]-party.center[0])**2+(user.location[1]-party.center[1])**2)
-
+error_count = 0
 def sadnessDiagnostic(party):
-    places = c.party1.filteredPlaces
+    places = party.filteredPlaces
+    if len(places) == 0:
+        print "SHIIIIIT SON"
+        global error_count
+        error_count += 1
+        return [0]*4
     users = party.users
     weights = {"dist" : 1., "rating" : 1., "price" : 1., "types" : 1.}
     sadness = [0]*4
@@ -20,29 +25,38 @@ def sadnessDiagnostic(party):
         for i in range(len(users)):
             dist = getDist(users[i], party, place)
             if dist > 0:
-                sadness[0] += dist * weights["dist"] * (1/0.0940694970359)
+                sadness[0] += (dist * weights["dist"])/0.0156106747366
+                #* (1/0.0940694970359)
                  # * (1/0.0679126470653)
+                 # (0.09179504072728065)
+
 
             rating = users[i].ratingPref - place["rating"]
             if rating > 0:
-                sadness[1] += rating * weights["rating"] * (1/0.186832348864)
+                sadness[1] += (rating * weights["rating"])/0.130747631926
+                # * (1/0.186832348864)
                  # * (1/0.109921338687)
+                 # (0.163095087303309)
 
             price = place["price"] - users[i].pricePref
             if price > 0:
-                sadness[2] += price * weights["price"] * (1/0.313995)
+                sadness[2] += (price * weights["price"])/0.170200961101
+                # * (1/0.313995)
                  # * (1/0.693561666667)
+                 # (0.3144504166681268)
 
-            type = 0.
+            type = 0
             for event in users[i].eventPref:
                 if event not in place["types"]:
-                    type += 1.
+                    type += 1
             if type == len(users[i].eventPref):
                 type = 1.
             else:
-                type = type/(2*len(users[i].eventPref))
-            sadness[3] += type * weights["types"] * (1/0.504125555556)
+                type = 0
+            sadness[3] += type * weights["types"]/0.319765608129
+            #* (1/0.504125555556)
              # * (1/0.425713472222)
+             # (0.5319052430572467)
 
     sadness[0] = sadness[0]/num
     sadness[1] = sadness[1]/num
@@ -80,9 +94,10 @@ def randomParty(num):
     return party
 
 total_sadness = [0]*4
-pnum = 400
+pnum = 10
 for i in range(pnum):
     party = randomParty(np.random.randint(2,7))
+    print len(party.filteredPlaces)
     sadness = sadnessDiagnostic(party)
     print "Party", i, "User Count", len(party.users)
     print "Party", i, "Distance", sadness[0], "Rating", sadness[1], "Price", sadness[2], "Type", sadness[3]
@@ -91,4 +106,18 @@ for i in range(pnum):
     total_sadness[2] += sadness[2]
     total_sadness[3] += sadness[3]
 print "Total User Count", count
-print "Total", "Distance", total_sadness[0]/pnum, "Rating", total_sadness[1]/pnum, "Price", total_sadness[2]/pnum, "Type", total_sadness[3]/pnum
+print "Total Error Count", error_count
+print "Total", "Distance", total_sadness[0]/(pnum - error_count), "Rating", total_sadness[1]/(pnum - error_count), "Price", total_sadness[2]/(pnum - error_count), "Type", total_sadness[3]/(pnum - error_count)
+
+# Total -- 50 -- Distance 0.0161592456178 Rating 0.127213537013 Price 0.169797451502 Type 0.457565392461
+# Total -- 20 -- Distance 0.0188080062544 Rating 0.138408560697 Price 0.173751310925 Type 0.279295517729
+# Total -- 500 -- Distance 0.0156106747366 Rating 0.130747631926 Price 0.170200961101 Type 0.319765608129
+    # Error count 3
+
+# Normalized testa
+# Total -- 10 -- Distance 1.09756140318 Rating 1.16887866081 Price 0.968105008073 Type 0.870719462553
+# Total -- 10 -- Distance 0.841315174016 Rating 1.69979152832 Price 0.656875960548 Type 0.958094400112
+# Total -- 10 -- Distance 1.16633972916 Rating 1.01652446126 Price 0.551033347781 Type 0.929086713049
+# Total -- 10 -- Distance 1.00351374524 Rating 1.04211459919 Price 0.879781636077 Type 1.09478562689
+# Total -- 10 -- Distance 0.785663224253 Rating 1.59192226143 Price 0.879333036906 Type 1.0029138118
+# Total -- 10 -- Distance 0.993086300076 Rating 0.811261024419 Price 1.05950515338 Type 0.621396677955
