@@ -236,7 +236,7 @@ class Party:
 
         # normalizers is used to normalize the sadness function to make its
         # output more intuitive
-        normalizers = {"type": 0.504125555556, "price": 0.313995, "rating": 0.186832348864, "dist": 0.0940694970359}
+        normalizers = {"type": 0.319765608129, "price": 0.170200961101, "rating": 0.130747631926, "dist": 0.0156106747366}
 
         # Initialize the sadness list
         sadness = [0] * len(self.users)
@@ -264,9 +264,9 @@ class Party:
                 if event not in place["types"]:
                     type += 1
             if type == len(self.users[i].eventPref):
-                type = 1
+                type = 1.
             else:
-                type = type / (2 * len(self.users[i].eventPref))
+                type = 0
             sadness[i] += type / normalizers["type"]
 
         return sadness
