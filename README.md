@@ -38,7 +38,9 @@ Finally, to run the web application, run `python app.py`.
 ### Authors
 **Hakeem Angulu**, Harvard College Class of 2020
 [hangulu@college.harvard.edu](mailto:hangulu@college.harvard.edu)
+
 **Louie Ayre**, Harvard College Class of 2020
 [layre@college.harvard.edu](mailto:layre@college.harvard.edu)
+
 **Amadou Camara**, Harvard College Class of 2020
 [acamara@college.harvard.edu](mailto:acamara@college.harvard.edu)
