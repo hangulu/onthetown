@@ -11,6 +11,7 @@ flask-session = "*"
 requests = "*"
 werkzeug = "*"
 requests-cache = "*"
+redis = "*"
 
 [requires]
 python_version = "2.7"
