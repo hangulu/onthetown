@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Sign Up
+{% endblock %}
+
+{% block main %}
+      <div class="jumbotron">
+        <h2>On The Town</h2>
+        <h4>Already have an account?</h4>
+        <form action="/login">
+          <input type="submit" class="btn btn-success" value="Sign In Now" />
+        </form>
+        <h4>If not, create your account below:</h4>
+        <form class="form-signin" action="/register" method="post">
+        <label for="inputName" class="sr-only">Name</label>
+        <input type="name" name="inputName" id="inputName" class="form-control" placeholder="Name" required autofocus>
+
+        <label for="inputEmail" class="sr-only">Email</label>
+        <input type="email" name="inputEmail" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="inputPassword" id="inputPassword" class="form-control" placeholder="Password" required>
+
+        {% if error_msg %}
+          <p>{{ error_msg }}</p>
+        {% endif %}
+
+        <button id="btnSignUp" class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+      </form>
+      </div>
+{% endblock %}
