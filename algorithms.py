@@ -11,7 +11,8 @@ This module implements these algorithms as a class, as well as their
 supporting data structures.
 """
 
-import center
+import center as c
+import copy
 import heapq, random
 
 class Algorithm:
@@ -32,7 +33,7 @@ class Algorithm:
         self.cost_fn = cost_fn
         self.heuristic = heuristic
 
-    def search(self, problem):
+    def search(self, party):
         """
         The search algorithm. Takes in a search problem and returns a
         solution. In the social plannnig case, the search problem is the
@@ -56,15 +57,15 @@ class Algorithm:
 
         # If it is uniform cost search, include the extra parameter for cost.
         # Push the first state to the data structure.
-        if self.type == "dfs":
-            dstruct = Stack()
-        elif self.type == "bfs":
-            dstruct = Queue()
-        elif self.type == "astar":
-            dstruct = PriorityQueueWithFunction(self.heuristic)
-        dstruct.push((start, [], cost))
-
-        if self.type == "ucs":
+        if self.type != "ucs":
+            if self.type == "dfs":
+                dstruct = Stack()
+            elif self.type == "bfs":
+                dstruct = Queue()
+            elif self.type == "astar":
+                dstruct = PriorityQueueWithFunction(self.heuristic)
+            dstruct.push((start, [], cost))
+        else:
             dstruct = PriorityQueue()
             dstruct.push((start, [], cost), cost)
 
@@ -79,6 +80,7 @@ class Algorithm:
 
             # Perhaps something like the below to return
             if len(previous) == 7:
+                # print self.type, cost
                 return previous, cost
 
             # Check if the current place has been visited before.
@@ -86,14 +88,175 @@ class Algorithm:
                 visited.append(event)
                 # Add the successors of the place to the data structure.
                 # for successor in problem.getSuccessors(state):
-                for successor in center.similarity(event, filtered_list):
+                for successor in c.similarity(event, filtered_list):
                     sadness = successor["sadness"]
                     succ_cost = sum(sadness) + max(sadness)
                     # Let previous store all the previous places
-                    if ucs:
+                    if self.type == "ucs":
                         dstruct.push((successor, previous + [successor], cost + succ_cost), cost + succ_cost)
                     else:
-                        dstruct.push(successor, previous + [successor], cost + succ_cost)
+                        dstruct.push((successor, previous + [successor], cost + succ_cost))
+
+    def dfsSearch(self, party):
+        visited = []
+        cost = 0
+        filteredList = party.filteredPlaces
+        path = []
+
+        stack = Stack()
+
+        stack.push((path, filteredList, cost))
+
+        while not stack.isEmpty():
+            path, remaining, cost = stack.pop()
+
+            if len(path) == 7:
+                return path, cost
+
+            if len(path) != 0:
+                event = path[-1]
+                if event not in visited:
+                    visited.append(event)
+                    nextList = c.similarity(event, remaining)
+                    for successor in nextList:
+                        sadness = successor["sadness"]
+                        nextCost = sum(sadness) + max(sadness)
+                        stack.push((path + [successor], nextList, cost + nextCost))
+            else:
+                for successor in filteredList:
+                    sadness = successor["sadness"]
+                    nextCost = sum(sadness) + max(sadness)
+                    newList = copy.deepcopy(filteredList)
+                    newList.remove(successor)
+                    stack.push((path + [successor], filteredList, cost + nextCost))
+
+    def bfsSearch(self, party):
+        visited = []
+        cost = 0
+        filteredList = party.filteredPlaces
+        path = []
+
+        queue = Queue()
+
+        queue.push((path, filteredList, cost))
+
+        while not queue.isEmpty():
+            path, remaining, cost = queue.pop()
+
+            if len(path) == 7:
+                return path, cost
+            else:
+                if len(path) != 0:
+                    event = path[-1]
+                    nextList = c.similarity(event, remaining)
+                    for successor in nextList:
+                        sadness = successor["sadness"]
+                        nextCost = sum(sadness) + max(sadness)
+                        queue.push((path + [successor], nextList, cost + nextCost))
+
+                else:
+                    for successor in filteredList:
+                        sadness = successor["sadness"]
+                        nextCost = sum(sadness) + max(sadness)
+                        newList = copy.deepcopy(filteredList)
+                        newList.remove(successor)
+                        queue.push((path + [successor], newList, cost + nextCost))
+
+    def greedySearch(self, party):
+        visited = []
+        cost = 0
+        filteredList = party.filteredPlaces
+        path = []
+
+        prioQ = PriorityQueue()
+
+        prioQ.push((path, filteredList, cost), 0)
+
+        while not prioQ.isEmpty():
+            path, remaining, cost = prioQ.pop()
+            if len(path) == 7:
+                return path, cost
+
+            if len(path) != 0:
+                event = path[-1]
+                if len(path) != 0:
+                    event = path[-1]
+                    newList = c.similarity(event, remaining)
+                    for successor in newList:
+                        if successor not in path:
+                            sadness = successor["sadness"]
+                            nextCost = sum(sadness) + max(sadness)
+                            prioQ.push((path + [successor], newList, cost + nextCost), heuristic((path + [successor], newList, cost + nextCost)))
+            else:
+                for successor in filteredList:
+                    sadness = successor["sadness"]
+                    nextCost = sum(sadness) + max(sadness)
+                    newList = copy.deepcopy(filteredList)
+                    newList.remove(successor)
+                    prioQ.push((path + [successor], filteredList, cost + nextCost), heuristic((path + [successor], newList, cost + nextCost)))
+
+    def astarSearch(self, party):
+        visited = []
+        cost = 0
+        filteredList = party.filteredPlaces
+        path = []
+
+        prioQ = PriorityQueueWithFunction(astarFunction)
+
+        prioQ.push((path, filteredList, cost))
+
+        while not prioQ.isEmpty():
+            path, remaining, cost = prioQ.pop()
+
+            if len(path) == 7:
+                return path, cost
+
+            if len(path) != 0:
+                event = path[-1]
+                nextList = c.similarity(event, remaining)
+                for successor in nextList:
+                    sadness = successor["sadness"]
+                    nextCost = sum(sadness) + max(sadness)
+                    prioQ.push((path + [successor], nextList, cost + nextCost))
+            else:
+                for successor in filteredList:
+                    sadness = successor["sadness"]
+                    nextCost = sum(sadness) + max(sadness)
+                    newList = copy.deepcopy(filteredList)
+                    newList.remove(successor)
+                    prioQ.push((path + [successor], filteredList, cost + nextCost))
+
+    def ucsSearch(self, party):
+        level = 0
+        visited = []
+        cost = 0
+        filteredList = party.filteredPlaces
+        path = []
+
+        prioQ = PriorityQueue()
+
+        prioQ.push((path, filteredList, cost), cost)
+
+        while not prioQ.isEmpty():
+            path, remaining, cost = prioQ.pop()
+            if len(path) == 7:
+                return path, cost
+            else:
+                if len(path) != 0:
+                    event = path[-1]
+                    nextList = c.similarity(event, remaining)
+                    for successor in nextList:
+                        sadness = successor["sadness"]
+                        nextCost = sum(sadness) + max(sadness)
+                        prioQ.push((path + [successor], nextList, cost + nextCost), cost + nextCost)
+
+                else:
+                    for successor in filteredList:
+                        sadness = successor["sadness"]
+                        nextCost = sum(sadness) + max(sadness)
+                        newList = copy.deepcopy(filteredList)
+                        newList.remove(successor)
+                        prioQ.push((path + [successor], newList, cost + nextCost), cost + nextCost)
 
 # The following are the classes for the data structures
 class Stack:
@@ -187,7 +350,10 @@ class PriorityQueueWithFunction(PriorityQueue):
         "Adds an item to the queue with priority from the priority function"
         PriorityQueue.push(self, item, self.priorityFunction(item))
 
-def astar_heuristic(state):
+def astarFunction(state):
+    return state[2] + heuristic(state)
+
+def heuristic(state):
     """
     Takes in a state (a triple of current place, all places before the current
     place, and the total cost associated with the current place) and applies a
@@ -198,8 +364,11 @@ def astar_heuristic(state):
     return: integer that approximates distance from the goal
     """
     # Encode the progress to the goal as the length of the list of previous states
-    progress = len(state[1])
+    progress = len(state[0])
     # Goal distance is the number of places left to be added multiplied by
     # the average of the sadness value to the current point
-    goal_distance = (7 - progress) * state[2] / progress
+    if progress != 0:
+        goal_distance = (7 - progress) * state[2] / (progress)
+    else:
+        goal_distance = 7
     return goal_distance

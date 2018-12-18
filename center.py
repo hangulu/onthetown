@@ -198,10 +198,10 @@ class Party:
         to the party.
         """
         self.places = []
-        rad = 0
-        for i in range(10):
-            rad += 500
-            self.updatePlaces(rad)
+        # rad = 0
+        # for i in range(10):
+        #     rad += 500
+        self.updatePlaces()
         self.filterList()
         self.assignSadness()
 
@@ -300,6 +300,6 @@ def similarity(event, places):
                     similarity += 1.0 / float(len(place["types"]))
         # 1.67 is the empirically generated threshold for similarity
         # The empirical process behind this is described in the paper
-        if similarity <= 1.67:
+        if similarity <= 1.7:
             dissimilar.append(place)
     return dissimilar

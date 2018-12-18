@@ -60,3 +60,58 @@ for i in range(7):
 # Test the sadness function
 print "Sadness function tests: \n"
 print party1.sadnessFunction(np.random.choice(party1.filteredPlaces))
+
+algs = alg.Algorithm("doesnt matter", "doesnt matter", "doesn't matter")
+
+# testing algorithms
+solution = algs.dfsSearch(party1)
+print "DFS Solution"
+totalAverageSadness = 0
+for sol in solution[0]:
+    averageSadness =  sum(sol["sadness"])/len(sol["sadness"])
+    print str(sol["name"]), averageSadness
+    totalAverageSadness += averageSadness
+
+print "\nTotal Average Sadness\n", totalAverageSadness
+
+solution = algs.greedySearch(party1)
+print "Greedy Solution"
+totalAverageSadness = 0
+for sol in solution[0]:
+    averageSadness =  sum(sol["sadness"])/len(sol["sadness"])
+    print str(sol["name"]), averageSadness
+    totalAverageSadness += averageSadness
+
+print "\nTotal Average Sadness\n", totalAverageSadness
+
+solution = algs.astarSearch(party1)
+print "A* Solution"
+totalAverageSadness = 0
+for sol in solution[0]:
+    averageSadness =  sum(sol["sadness"])/len(sol["sadness"])
+    print str(sol["name"]), averageSadness
+    totalAverageSadness += averageSadness
+
+print "\nTotal Average Sadness\n", totalAverageSadness
+
+#BFS and DFS take superlong
+
+# solution = bfsSearch(party1)
+# print "BFS Solution"
+# totalAverageSadness = 0
+# for sol in solution[0]:
+#     averageSadness =  sum(sol["sadness"])/len(sol["sadness"])
+#     print str(sol["name"]), averageSadness
+#     totalAverageSadness += averageSadness
+#
+# print "\nTotal Average Sadness\n", totalAverageSadness
+
+# solution = ucsSearch(party1)
+# print "UCS Solution"
+# totalAverageSadness = 0
+# for sol in solution[0]:
+#     averageSadness =  sum(sol["sadness"])/len(sol["sadness"])
+#     print str(sol["name"]), averageSadness
+#     totalAverageSadness += averageSadness
+#
+# print "\nTotal Average Sadness\n", totalAverageSadness
