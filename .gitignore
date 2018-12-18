@@ -4,6 +4,7 @@ config.pyc
 center.pyc
 googleTypes.pyc
 googleAPICache.sqlite
+*.db-journal
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
