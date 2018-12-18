@@ -198,10 +198,11 @@ class Party:
         to the party.
         """
         self.places = []
+        # if you desire more locations, uncomment below, indent updatePlaces, and replace 5000 with rad
         # rad = 0
         # for i in range(10):
         #     rad += 500
-        self.updatePlaces(5000)
+        self.updatePlaces(5000) 
         self.updatePlaces()
         self.filterList()
         self.assignSadness()

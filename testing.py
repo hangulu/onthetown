@@ -85,7 +85,7 @@ for sol in solution[0]:
 
 print "\nTotal Average Sadness\n", totalAverageSadness
 
-#BFS and DFS take superlong
+# BFS and DFS take a long time, uncomment if you have the patience.
 
 solution = algs.bfsSearch(party1)
 print "BFS Solution"
