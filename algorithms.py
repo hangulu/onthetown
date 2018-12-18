@@ -52,7 +52,7 @@ class Algorithm:
         # cost stores the total sadness of the current tree
         cost = 0
         # The starting state is the first of the full list of activities returned # from the Google search
-        filtered_list = party.filteredPlaces
+        filtered_list = party.filteredPlaces[0:50]
         start = filtered_list[0]
 
         # If it is uniform cost search, include the extra parameter for cost.
@@ -97,18 +97,18 @@ class Algorithm:
                     else:
                         dstruct.push((successor, previous + [successor], cost + succ_cost))
 
-"""
-The search algorithms are below and each function name describes the algorithm.
-They all take in a party of users and events list and return a
-solution. In the social plannnig case, the search problem is the
-list of viable options for an activity, and the object returned is
-a list of the "best" 7.
-party (Party object): An object containing information about a
-potential meetup
+    """
+    The search algorithms are below and each function name describes the algorithm.
+    They all take in a party of users and events list and return a
+    solution. In the social plannnig case, the search problem is the
+    list of viable options for an activity, and the object returned is
+    a list of the "best" 7.
+    party (Party object): An object containing information about a
+    potential meetup
 
-return: Tuple of a list of the best 7 options for an activity and
-the total sadness associated with that list
-"""
+    return: Tuple of a list of the best 7 options for an activity and
+    the total sadness associated with that list
+    """
     def dfsSearch(self, party):
         # Initialize variables to store visited states, the cost, and
         # the starting state
@@ -117,7 +117,7 @@ the total sadness associated with that list
         # cost stores the total sadness of the current tree
         cost = 0
         # The starting state is the first of the full list of activities returned # from the Google search
-        filteredList = party.filteredPlaces
+        filteredList = party.filteredPlaces[0:50]
         path = []
 
         stack = Stack()
@@ -128,7 +128,7 @@ the total sadness associated with that list
         while not stack.isEmpty():
             path, remaining, cost = stack.pop()
 
-            if len(path) == 7:
+            if len(path) == 5:
                 return path, cost
 
             if len(path) != 0:
@@ -155,7 +155,7 @@ the total sadness associated with that list
     def bfsSearch(self, party):
         visited = []
         cost = 0
-        filteredList = party.filteredPlaces
+        filteredList = party.filteredPlaces[0:50]
         path = []
 
         queue = Queue()
@@ -165,7 +165,7 @@ the total sadness associated with that list
         while not queue.isEmpty():
             path, remaining, cost = queue.pop()
 
-            if len(path) == 7:
+            if len(path) == 5:
                 return path, cost
             else:
                 if len(path) != 0:
@@ -187,7 +187,7 @@ the total sadness associated with that list
     def greedySearch(self, party):
         visited = []
         cost = 0
-        filteredList = party.filteredPlaces
+        filteredList = party.filteredPlaces[0:50]
         path = []
 
         prioQ = PriorityQueue()
@@ -196,7 +196,7 @@ the total sadness associated with that list
 
         while not prioQ.isEmpty():
             path, remaining, cost = prioQ.pop()
-            if len(path) == 7:
+            if len(path) == 5:
                 return path, cost
 
             if len(path) != 0:
@@ -220,7 +220,7 @@ the total sadness associated with that list
     def astarSearch(self, party):
         visited = []
         cost = 0
-        filteredList = party.filteredPlaces
+        filteredList = party.filteredPlaces[0:50]
         path = []
 
         prioQ = PriorityQueueWithFunction(astarFunction)
@@ -230,7 +230,7 @@ the total sadness associated with that list
         while not prioQ.isEmpty():
             path, remaining, cost = prioQ.pop()
 
-            if len(path) == 7:
+            if len(path) == 5:
                 return path, cost
 
             if len(path) != 0:
@@ -252,7 +252,7 @@ the total sadness associated with that list
         level = 0
         visited = []
         cost = 0
-        filteredList = party.filteredPlaces
+        filteredList = party.filteredPlaces[0:50]
         path = []
 
         prioQ = PriorityQueue()
@@ -261,7 +261,7 @@ the total sadness associated with that list
 
         while not prioQ.isEmpty():
             path, remaining, cost = prioQ.pop()
-            if len(path) == 7:
+            if len(path) == 5:
                 return path, cost
             else:
                 if len(path) != 0:
@@ -390,7 +390,7 @@ def heuristic(state):
     # Goal distance is the number of places left to be added multiplied by
     # the average of the sadness value to the current point
     if progress != 0:
-        goal_distance = (7 - progress) * state[2] / (progress)
+        goal_distance = (5 - progress) * state[2] / (progress)
     else:
-        goal_distance = 7
+        goal_distance = 5
     return goal_distance
