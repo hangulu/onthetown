@@ -40,3 +40,7 @@ body {
 .jumbotron {
   text-align: center;
 }
+
+.leftalign {
+  text-align: left;
+}

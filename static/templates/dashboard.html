@@ -13,7 +13,16 @@
           <h3>Your Preferences</h3>
           <h4>The following are your chosen preferences for events. If you've yet to set preferences, we've initialized them for you.</h4>
           <p></p>
-          <p>Activity type: {{ prefs["activity"] }}</p>
+          <p>
+            Activity types:
+            {% for i in range(prefs["activity"]|length) %}
+              {% if i == (prefs["activity"]|length - 1) %}
+                {{ prefs["activity"][i] + "." }}
+              {% else %}
+                {{ prefs["activity"][i] + ", " }}
+              {% endif %}
+            {% endfor %}
+          </p>
           <p>Price: {{ prefs["price"] }}</p>
           <p>Rating: {{ prefs["rating"] }}</p>
           <p>Location: {{ prefs["lat"] }}, {{ prefs["long"] }}</p>
@@ -23,47 +32,47 @@
           {% if not recent_update %}
 
           <form class="form-signin" action="/pref" method="post">
-          <div class="form-group form-group-lg">
-          <h5>Activity Type:</h5>
-          <label for="activity_type" class="sr-only">Activity Type</label>
-          <select class="form-control" name="activity_type" placeholder="Type of Activity" required autofocus>
-				    <option value="amusement_park">Amusement Park</option>
-						<option value="aquarium">Aquarium</option>
-						<option value="bakery">Bakery</option>
-						<option value="bar">Bar</option>
-						<option value="book_store">Book Store</option>
-						<option value="bowling_alley">Bowling Alley</option>
-            <option value="cafe">Cafe</option>
-						<option value="campground">Campground</option>
-						<option value="casino">Casino</option>
-						<option value="city_hall">City Hall</option>
-						<option value="clothing_store">Clothing Store</option>
-						<option value="department_store">Department Store</option>
-            <option value="electronics_store">Electronics Store</option>
-						<option value="florist">Florist</option>
-						<option value="gym">Gym</option>
-						<option value="jewelry_store">Jewelry Store</option>
-						<option value="library">Library</option>
-						<option value="liquor_store">Liquor Store</option>
-            <option value="lodging">Lodging</option>
-						<option value="meal_delivery">Meal Delivery</option>
-						<option value="meal_takeaway">Meal Takeaway</option>
-						<option value="movie_rental">Movie Rental</option>
-						<option value="movie_theater">Movie Theater</option>
-						<option value="museum">Museum</option>
-            <option value="night_club">Nightclub</option>
-						<option value="painter">Painter</option>
-						<option value="park">Park</option>
-						<option value="pet_store">Pet Store</option>
-						<option value="restaurant">Restaurant</option>
-						<option value="shoe_store">Shoe Store</option>
-            <option value="shopping_mall">Shopping Mall</option>
-						<option value="spa">Spa</option>
-						<option value="stadium">Stadium</option>
-						<option value="store">Store</option>
-						<option value="zoo">Zoo</option>
-				    </select>
-          </div>
+            <div class="form-group form-group-lg">
+            <h5>Activity Type:</h5>
+            <label for="activity_type" class="sr-only">Activity Type</label>
+            <select multiple class="form-control" name="act_check" placeholder="Type of Activity" required autofocus>
+  				    <option value="amusement_park">Amusement Park</option>
+  						<option value="aquarium">Aquarium</option>
+  						<option value="bakery">Bakery</option>
+  						<option value="bar">Bar</option>
+  						<option value="book_store">Book Store</option>
+  						<option value="bowling_alley">Bowling Alley</option>
+              <option value="cafe">Cafe</option>
+  						<option value="campground">Campground</option>
+  						<option value="casino">Casino</option>
+  						<option value="city_hall">City Hall</option>
+  						<option value="clothing_store">Clothing Store</option>
+  						<option value="department_store">Department Store</option>
+              <option value="electronics_store">Electronics Store</option>
+  						<option value="florist">Florist</option>
+  						<option value="gym">Gym</option>
+  						<option value="jewelry_store">Jewelry Store</option>
+  						<option value="library">Library</option>
+  						<option value="liquor_store">Liquor Store</option>
+              <option value="lodging">Lodging</option>
+  						<option value="meal_delivery">Meal Delivery</option>
+  						<option value="meal_takeaway">Meal Takeaway</option>
+  						<option value="movie_rental">Movie Rental</option>
+  						<option value="movie_theater">Movie Theater</option>
+  						<option value="museum">Museum</option>
+              <option value="night_club">Nightclub</option>
+  						<option value="painter">Painter</option>
+  						<option value="park">Park</option>
+  						<option value="pet_store">Pet Store</option>
+  						<option value="restaurant">Restaurant</option>
+  						<option value="shoe_store">Shoe Store</option>
+              <option value="shopping_mall">Shopping Mall</option>
+  						<option value="spa">Spa</option>
+  						<option value="stadium">Stadium</option>
+  						<option value="store">Store</option>
+  						<option value="zoo">Zoo</option>
+  				    </select>
+            </div>
 
           <div class="form-group form-group-lg">
           <h5>Price Preference:</h5>
@@ -110,7 +119,7 @@
           {% endif %}
 
           <br>
-          <a class="btn btn-success btn-lg" href="/plan" role="button">Plan An Event</a>
+          <a class="btn btn-success btn-lg" href="/setup" role="button">Plan An Event</a>
         </div>
       </div>
   {% endblock %}

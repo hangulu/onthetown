@@ -88,7 +88,7 @@ class Party:
             y += user.location[1]/len(self.users) # latitudes
 
         self.center = (x, y)
-        print "The center of the users is: ", self.center
+        # print "The center of the users is: ", self.center
 
     def addToParty(self, user):
         """
@@ -98,9 +98,9 @@ class Party:
         # The first person in the party is the organizer
         if not self.users:
             user.organizer = True
-            print user.name + " is the organizer of the party"
+            # print user.name + " is the organizer of the party"
         self.users.append(user)
-        print user.name + " has been added to the party"
+        # print user.name + " has been added to the party"
         # Update the center
         self.findCenter()
 
@@ -201,6 +201,7 @@ class Party:
         # rad = 0
         # for i in range(10):
         #     rad += 500
+        self.updatePlaces(5000)
         self.updatePlaces()
         self.filterList()
         self.assignSadness()
@@ -235,7 +236,7 @@ class Party:
 
         # normalizers is used to normalize the sadness function to make its
         # output more intuitive
-        normalizers = {"type": 0.504125555556, "price": 0.313995, "rating": 0.186832348864, "dist": 0.0940694970359}
+        normalizers = {"type": 0.319765608129, "price": 0.170200961101, "rating": 0.130747631926, "dist": 0.0156106747366}
 
         # Initialize the sadness list
         sadness = [0] * len(self.users)
@@ -263,9 +264,9 @@ class Party:
                 if event not in place["types"]:
                     type += 1
             if type == len(self.users[i].eventPref):
-                type = 1
+                type = 1.
             else:
-                type = type / (2 * len(self.users[i].eventPref))
+                type = 0
             sadness[i] += type / normalizers["type"]
 
         return sadness

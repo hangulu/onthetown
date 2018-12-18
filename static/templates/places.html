@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block title %}
+  Plan An Event
+{% endblock %}
+
+{% set name_var = name %}
+{% set dashed = True %}
+
+{% block main %}
+      <div class="row marketing">
+        <div class="jumbotron">
+          <h3>{{ named_gathering }}</h3>
+          <h4>ott.com/plan/{{ link }}</h4>
+          <br>
+          <h4>The following are the best 7 places for your group, based on your preferences:</h4>
+          <table class="table leftalign">
+            <tr>
+              <th class="c1">Name</th>
+              <th class="c2">Price</th>
+              <th class="c3">Rating</th>
+              <th class="c4">Location</th>
+              <th class="c5">Address</th>
+              <th class="c6">Types</th>
+            {% for place in soln %}
+            <tr>
+               <td class="c1">{{ place.name }}</td>
+               <td class="c2">{{ place.price }}</td>
+               <td class="c3">{{ place.rating }}</td>
+               <td class="c4">{{ place.location }}</td>
+               <td class="c5">{{ place.address }}</td>
+               <td class="c6">{{ place.types }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          <br>
+          <h4>We hope one of the above places suits your needs! You can find this page again by visiting:</h4>
+          <h4>ott.com/places/{{ link }}</h4>
+          <br>
+          <h4>You can plan also another event below:</h4>
+          <a class="btn btn-success btn-lg" href="/setup" role="button">Plan An Event</a>
+        </div>
+      </div>
+  {% endblock %}

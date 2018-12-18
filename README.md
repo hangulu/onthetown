@@ -30,8 +30,9 @@ There are two ways to install these dependencies:
 To initialize the database to store users' information:
 1. Ensure that you have deleted `users.db` in the `server/` directory.
 2. Run `db_init.py`
+3. Run `redis-server`
 
-Finally, to run the web application, run `python app.py`.
+Finally, to run the web application, run `python app.py` in a new Terminal window.
 
 ***
 
