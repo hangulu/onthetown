@@ -97,9 +97,26 @@ class Algorithm:
                     else:
                         dstruct.push((successor, previous + [successor], cost + succ_cost))
 
+"""
+The search algorithms are below and each function name describes the algorithm.
+They all take in a party of users and events list and return a
+solution. In the social plannnig case, the search problem is the
+list of viable options for an activity, and the object returned is
+a list of the "best" 7.
+party (Party object): An object containing information about a
+potential meetup
+
+return: Tuple of a list of the best 7 options for an activity and
+the total sadness associated with that list
+"""
     def dfsSearch(self, party):
+        # Initialize variables to store visited states, the cost, and
+        # the starting state
+        # visited stores the places that have already been visited
         visited = []
+        # cost stores the total sadness of the current tree
         cost = 0
+        # The starting state is the first of the full list of activities returned # from the Google search
         filteredList = party.filteredPlaces
         path = []
 
@@ -107,6 +124,7 @@ class Algorithm:
 
         stack.push((path, filteredList, cost))
 
+        # Iterate through the entire data structure.
         while not stack.isEmpty():
             path, remaining, cost = stack.pop()
 
@@ -118,11 +136,15 @@ class Algorithm:
                 if event not in visited:
                     visited.append(event)
                     nextList = c.similarity(event, remaining)
+                    # Add the successors of the place to the data structure.
+                    # for successor in problem.getSuccessors(state):
                     for successor in nextList:
                         sadness = successor["sadness"]
                         nextCost = sum(sadness) + max(sadness)
+                        # Let previous store all the previous places
                         stack.push((path + [successor], nextList, cost + nextCost))
             else:
+                # for the initial empty path
                 for successor in filteredList:
                     sadness = successor["sadness"]
                     nextCost = sum(sadness) + max(sadness)

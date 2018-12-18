@@ -4,21 +4,18 @@ This module implements tests for the social planning search problem.
 from center import *
 import algorithms as alg
 
-# Tests don't work together. For some reason the second keeps data from the
-# first. To be fixed.
-
 # Test 1
-# print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
-# party = Party()
-# hakeem = User("Hakeem", 40.807835, -73.963957, 4, 5, ["bar", "restaurant"])
-# louie = User("Louie", 40.709013, -74.013692, 3, 4, ["restaurant", "movie"])
-# amadou = User("Amadou", 40.773585, -73.936027, 2, 3, ["night_club", "bar", "restaurant"])
-# party.addToParty(hakeem)
-# party.addToParty(louie)
-# party.addToParty(amadou)
-# party.updateAll()
-# print len(party.places)
-# print "filtered", len(party.filteredPlaces)
+print "PARTY 1\nPARTY 1\nPARTY 1\nPARTY 1\n"
+party = Party()
+hakeem = User("Hakeem", 40.807835, -73.963957, 4, 5, ["bar", "restaurant"])
+louie = User("Louie", 40.709013, -74.013692, 3, 4, ["restaurant", "movie"])
+amadou = User("Amadou", 40.773585, -73.936027, 2, 3, ["night_club", "bar", "restaurant"])
+party.addToParty(hakeem)
+party.addToParty(louie)
+party.addToParty(amadou)
+party.updateAll()
+print len(party.places)
+print "filtered", len(party.filteredPlaces)
 
 # Test 2
 print "PARTY 2\nPARTY 2\nPARTY 2\nPARTY 2\n"
@@ -40,22 +37,16 @@ party1.updateAll()
 print len(party1.places)
 print "filtered", len(party1.filteredPlaces)
 
-count = 0
-for place in party1.filteredPlaces:
-    if place["price"] == None or place["rating"] == None:
-        count += 1
-print "count", count
-
 # Test the similarity function
-print "Similarity function tests: \n"
-list = party1.filteredPlaces
-randEvent = np.random.choice(list)
-newList = similarity(randEvent, party1.filteredPlaces)
-for i in range(7):
-    print len(newList)
-    list = newList
-    randEvent = np.random.choice(list)
-    newList = similarity(randEvent, list)
+# print "Similarity function tests: \n"
+# list = party1.filteredPlaces
+# randEvent = np.random.choice(list)
+# newList = similarity(randEvent, party1.filteredPlaces)
+# for i in range(7):
+#     print len(newList)
+#     list = newList
+#     randEvent = np.random.choice(list)
+#     newList = similarity(randEvent, list)
 
 # Test the sadness function
 print "Sadness function tests: \n"
