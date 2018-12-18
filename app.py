@@ -275,8 +275,13 @@ def plan_event(c_link):
             try:
                 # Save the link and get the name
                 custom_link = c_link
-                named_gathering = c_link.split("-")[1]
-
+                delimited_name = c_link.split("-")
+                named_gathering = ""
+                for i in range(len(delimited_name)):
+                    if i == 0:
+                        continue
+                    else:
+                        named_gathering += delimited_name[i]
                 # Extract the email and name from the session
                 _email = session["email"]
                 _name = session["name"]
@@ -343,7 +348,13 @@ def solution(c_link):
         try:
             # Extract the link and the name of the gathering
             custom_link = c_link
-            named_gathering = c_link.split("-")[1]
+            delimited_name = c_link.split("-")
+            named_gathering = ""
+            for i in range(len(delimited_name)):
+                if i == 0:
+                    continue
+                else:
+                    named_gathering += delimited_name[i]
 
             # Validate the input
             if custom_link:
