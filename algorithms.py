@@ -33,70 +33,6 @@ class Algorithm:
         self.cost_fn = cost_fn
         self.heuristic = heuristic
 
-    def search(self, party):
-        """
-        The search algorithm. Takes in a search problem and returns a
-        solution. In the social plannnig case, the search problem is the
-        list of viable options for an activity, and the object returned is
-        a list of the "best" 7.
-        problem (Party object): An object containing information about a
-        potential meetup
-
-        return: Tuple of a list of the best 7 options for an activity and
-        the total sadness associated with that list
-        """
-        # Initialize variables to store visited states, the cost, and
-        # the starting state
-        # visited stores the places that have already been visited
-        visited = []
-        # cost stores the total sadness of the current tree
-        cost = 0
-        # The starting state is the first of the full list of activities returned # from the Google search
-        filtered_list = party.filteredPlaces
-        start = filtered_list[0]
-
-        # If it is uniform cost search, include the extra parameter for cost.
-        # Push the first state to the data structure.
-        if self.type != "ucs":
-            if self.type == "dfs":
-                dstruct = Stack()
-            elif self.type == "bfs":
-                dstruct = Queue()
-            elif self.type == "astar":
-                dstruct = PriorityQueueWithFunction(self.heuristic)
-            dstruct.push((start, [], cost))
-        else:
-            dstruct = PriorityQueue()
-            dstruct.push((start, [], cost), cost)
-
-        # Iterate through the entire data structure.
-        while not dstruct.isEmpty():
-            # Deconstruct the tuple created by getSuccessors.
-            # A "successor" is a member of the list of places deemed dissimilar
-            # from the current node. That list is generated from the similarity
-            # function applied to the current node and the full list of places
-            # returned from the Google API call
-            event, previous, cost = dstruct.pop()
-
-            # Perhaps something like the below to return
-            if len(previous) == 7:
-                # print self.type, cost
-                return previous, cost
-
-            # Check if the current place has been visited before.
-            if event not in visited:
-                visited.append(event)
-                # Add the successors of the place to the data structure.
-                # for successor in problem.getSuccessors(state):
-                for successor in c.similarity(event, filtered_list):
-                    sadness = successor["sadness"]
-                    succ_cost = sum(sadness) + max(sadness)
-                    # Let previous store all the previous places
-                    if self.type == "ucs":
-                        dstruct.push((successor, previous + [successor], cost + succ_cost), cost + succ_cost)
-                    else:
-                        dstruct.push((successor, previous + [successor], cost + succ_cost))
-
     def dfsSearch(self, party):
         """
         The DFS algorithm. Takes in a search problem and returns a
@@ -132,16 +68,17 @@ class Algorithm:
 
             if len(path) != 0:
                 event = path[-1]
-                if event not in visited:
-                    visited.append(event)
+                if path not in visited:
+                    visited.append(path)
                     nextList = c.similarity(event, remaining)
                     # Add the successors of the place to the data structure.
                     # for successor in problem.getSuccessors(state):
                     for successor in nextList:
-                        sadness = successor["sadness"]
-                        nextCost = sum(sadness) + max(sadness)
-                        # Let previous store all the previous places
-                        stack.push((path + [successor], nextList, cost + nextCost))
+                        if successor not in path:
+                            sadness = successor["sadness"]
+                            nextCost = sum(sadness) + max(sadness)
+                            # Let previous store all the previous places
+                            stack.push((path + [successor], nextList, cost + nextCost))
             else:
                 # for the initial empty path
                 for successor in filteredList:
@@ -180,11 +117,14 @@ class Algorithm:
             else:
                 if len(path) != 0:
                     event = path[-1]
-                    nextList = c.similarity(event, remaining)
-                    for successor in nextList:
-                        sadness = successor["sadness"]
-                        nextCost = sum(sadness) + max(sadness)
-                        queue.push((path + [successor], nextList, cost + nextCost))
+                    if path not in visited:
+                        visited.append(path)
+                        nextList = c.similarity(event, remaining)
+                        for successor in nextList:
+                            if successor not in path:
+                                sadness = successor["sadness"]
+                                nextCost = sum(sadness) + max(sadness)
+                                queue.push((path + [successor], nextList, cost + nextCost))
 
                 else:
                     for successor in filteredList:
@@ -222,8 +162,8 @@ class Algorithm:
 
             if len(path) != 0:
                 event = path[-1]
-                if len(path) != 0:
-                    event = path[-1]
+                if path not in visited:
+                    visited.append(path)
                     newList = c.similarity(event, remaining)
                     for successor in newList:
                         if successor not in path:
@@ -267,11 +207,14 @@ class Algorithm:
 
             if len(path) != 0:
                 event = path[-1]
-                nextList = c.similarity(event, remaining)
-                for successor in nextList:
-                    sadness = successor["sadness"]
-                    nextCost = sum(sadness) + max(sadness)
-                    prioQ.push((path + [successor], nextList, cost + nextCost))
+                if path not in visited:
+                    visited.append(path)
+                    nextList = c.similarity(event, remaining)
+                    for successor in nextList:
+                        if successor not in path:
+                            sadness = successor["sadness"]
+                            nextCost = sum(sadness) + max(sadness)
+                            prioQ.push((path + [successor], nextList, cost + nextCost))
             else:
                 for successor in filteredList:
                     sadness = successor["sadness"]
@@ -309,12 +252,14 @@ class Algorithm:
             else:
                 if len(path) != 0:
                     event = path[-1]
-                    nextList = c.similarity(event, remaining)
-                    for successor in nextList:
-                        sadness = successor["sadness"]
-                        nextCost = sum(sadness) + max(sadness)
-                        prioQ.push((path + [successor], nextList, cost + nextCost), cost + nextCost)
-
+                    if path not in visited:
+                        visited.append(path)
+                        nextList = c.similarity(event, remaining)
+                        for successor in nextList:
+                            if successor not in path:
+                                sadness = successor["sadness"]
+                                nextCost = sum(sadness) + max(sadness)
+                                prioQ.push((path + [successor], nextList, cost + nextCost), cost + nextCost)
                 else:
                     for successor in filteredList:
                         sadness = successor["sadness"]

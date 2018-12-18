@@ -87,22 +87,22 @@ print "\nTotal Average Sadness\n", totalAverageSadness
 
 # BFS and DFS take a long time, uncomment if you have the patience.
 
-# solution = algs.bfsSearch(party1)
-# print "BFS Solution"
-# totalAverageSadness = 0
-# for sol in solution[0]:
-#     averageSadness =  sum(sol["sadness"])/len(sol["sadness"])
-#     print str(sol["name"]), averageSadness
-#     totalAverageSadness += averageSadness
-#
-# print "\nTotal Average Sadness\n", totalAverageSadness
-#
-# solution = algs.ucsSearch(party1)
-# print "UCS Solution"
-# totalAverageSadness = 0
-# for sol in solution[0]:
-#     averageSadness =  sum(sol["sadness"])/len(sol["sadness"])
-#     print str(sol["name"]), averageSadness
-#     totalAverageSadness += averageSadness
-#
-# print "\nTotal Average Sadness\n", totalAverageSadness
+solution = algs.bfsSearch(party1)
+print "BFS Solution"
+totalAverageSadness = 0
+for sol in solution[0]:
+    averageSadness =  sum(sol["sadness"])/len(sol["sadness"])
+    print str(sol["name"]), averageSadness
+    totalAverageSadness += averageSadness
+
+print "\nTotal Average Sadness\n", totalAverageSadness
+
+solution = algs.ucsSearch(party1)
+print "UCS Solution"
+totalAverageSadness = 0
+for sol in solution[0]:
+    averageSadness =  sum(sol["sadness"])/len(sol["sadness"])
+    print str(sol["name"]), averageSadness
+    totalAverageSadness += averageSadness
+
+print "\nTotal Average Sadness\n", totalAverageSadness
