@@ -11,7 +11,7 @@
       <div class="row marketing">
         <div class="jumbotron">
           <h3>{{ named_gathering }}</h3>
-          <h4>ott.com/{{ link }}</h4>
+          <h4>ott.com/plan/{{ link }}</h4>
           <br>
           <h4>The following are the best 7 places for your group, based on your preferences:</h4>
           <table class="table leftalign">
@@ -34,7 +34,10 @@
             {% endfor %}
           </table>
           <br>
-          <h4>We hope one of the above places suits your needs! You can plan another event below:</h4>
+          <h4>We hope one of the above places suits your needs! You can find this page again by visiting:</h4>
+          <h4>ott.com/places/{{ link }}</h4>
+          <br>
+          <h4>You can plan also another event below:</h4>
           <a class="btn btn-success btn-lg" href="/setup" role="button">Plan An Event</a>
         </div>
       </div>

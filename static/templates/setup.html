@@ -22,7 +22,7 @@
           {% else %}
           <h3>{{ named_gathering }}</h3>
           <h4>Invite your friends by sending them this link:</h4>
-          <h2>ott.com/{{ link }}</h2>
+          <h2>ott.com/plan/{{ link }}</h2>
           <br>
           <form action="{{ url_for('plan_event', c_link=link) }}" method="post">
             <input type="submit" class="btn btn-info btn-lg" value="See My Party" />
