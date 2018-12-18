@@ -31,7 +31,7 @@ class User:
         user's location.
         organizer (boolean): Whether or not the user is the organizer.
         pricePref (int): The user's price preference as an integer between 0 and 4, inclusive.
-        ratingPref (float): The user's preference for a place's rating as an float between 1.0 and 5.0, inclusive.
+        ratingPref (float): The user's preference for a place's rating as a float between 1.0 and 5.0, inclusive.
         eventPref (string): The user's preference for a type of event. All options are in googleTypes.py.
         """
         self.name = name
@@ -141,7 +141,7 @@ class Party:
 
     def addPlaces(self, data):
         """
-        Iterate through the response data recieved from API calls and add the
+        Iterate through the response data received from API calls and add the
         formatted places to the list of all the places. Record the name,
         price, rating, longitude and latitude, address, and types associated
         with the event for each of the results.
