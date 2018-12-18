@@ -52,7 +52,7 @@ class Algorithm:
         # cost stores the total sadness of the current tree
         cost = 0
         # The starting state is the first of the full list of activities returned # from the Google search
-        filtered_list = party.filteredPlaces[0:50]
+        filtered_list = party.filteredPlaces
         start = filtered_list[0]
 
         # If it is uniform cost search, include the extra parameter for cost.
@@ -116,7 +116,7 @@ class Algorithm:
         # cost stores the total sadness of the current tree
         cost = 0
         # The starting state is the first of the full list of activities returned # from the Google search
-        filteredList = party.filteredPlaces[0:50]
+        filteredList = party.filteredPlaces
         path = []
 
         stack = Stack()
@@ -127,7 +127,7 @@ class Algorithm:
         while not stack.isEmpty():
             path, remaining, cost = stack.pop()
 
-            if len(path) == 5:
+            if len(path) == 7:
                 return path, cost
 
             if len(path) != 0:
@@ -165,7 +165,7 @@ class Algorithm:
         """
         visited = []
         cost = 0
-        filteredList = party.filteredPlaces[0:50]
+        filteredList = party.filteredPlaces
         path = []
 
         queue = Queue()
@@ -175,7 +175,7 @@ class Algorithm:
         while not queue.isEmpty():
             path, remaining, cost = queue.pop()
 
-            if len(path) == 5:
+            if len(path) == 7:
                 return path, cost
             else:
                 if len(path) != 0:
@@ -208,7 +208,7 @@ class Algorithm:
         """
         visited = []
         cost = 0
-        filteredList = party.filteredPlaces[0:50]
+        filteredList = party.filteredPlaces
         path = []
 
         prioQ = PriorityQueue()
@@ -217,7 +217,7 @@ class Algorithm:
 
         while not prioQ.isEmpty():
             path, remaining, cost = prioQ.pop()
-            if len(path) == 5:
+            if len(path) == 7:
                 return path, cost
 
             if len(path) != 0:
@@ -252,7 +252,7 @@ class Algorithm:
         """
         visited = []
         cost = 0
-        filteredList = party.filteredPlaces[0:50]
+        filteredList = party.filteredPlaces
         path = []
 
         prioQ = PriorityQueueWithFunction(astarFunction)
@@ -262,7 +262,7 @@ class Algorithm:
         while not prioQ.isEmpty():
             path, remaining, cost = prioQ.pop()
 
-            if len(path) == 5:
+            if len(path) == 7:
                 return path, cost
 
             if len(path) != 0:
@@ -295,7 +295,7 @@ class Algorithm:
         level = 0
         visited = []
         cost = 0
-        filteredList = party.filteredPlaces[0:50]
+        filteredList = party.filteredPlaces
         path = []
 
         prioQ = PriorityQueue()
@@ -304,7 +304,7 @@ class Algorithm:
 
         while not prioQ.isEmpty():
             path, remaining, cost = prioQ.pop()
-            if len(path) == 5:
+            if len(path) == 7:
                 return path, cost
             else:
                 if len(path) != 0:
@@ -440,7 +440,7 @@ def heuristic(state):
     # Goal distance is the number of places left to be added multiplied by
     # the average of the sadness value to the current point
     if progress != 0:
-        goal_distance = (5 - progress) * state[2] / (progress)
+        goal_distance = (7 - progress) * state[2] / (progress)
     else:
-        goal_distance = 5
+        goal_distance = 7
     return goal_distance
