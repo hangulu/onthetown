@@ -20,18 +20,75 @@ class Algorithm:
     A container for different types of search algorithms.
     """
 
-    def __init__(self, type, cost_fn, heuristic):
+    def __init__(self):
         """
         Initialize the Algorithm class.
-        type (string): A string denoting the type of algorithm. Either dfs,
-        bfs, ucs, greedy, or astar.
-        cost_fn (function): The cost function for the algorithm. For the
-        social planning case, this is the sadness function.
-        heuristic (function): The heuristic used for A* search.
         """
-        self.type = type
-        self.cost_fn = cost_fn
-        self.heuristic = heuristic
+            pass
+
+    def search(self, party):
+        """
+        The search algorithm. Takes in a search problem and returns a
+        solution. In the social plannnig case, the search problem is the
+        list of viable options for an activity, and the object returned is
+        a list of the "best" 7.
+        problem (Party object): An object containing information about a
+        potential meetup
+
+        return: Tuple of a list of the best 7 options for an activity and
+        the total sadness associated with that list
+        """
+        # Initialize variables to store visited states, the cost, and
+        # the starting state
+        # visited stores the places that have already been visited
+        visited = []
+        # cost stores the total sadness of the current tree
+        cost = 0
+        # The starting state is the first of the full list of activities returned # from the Google search
+        filtered_list = party.filteredPlaces
+        start = filtered_list[0]
+
+        # If it is uniform cost search, include the extra parameter for cost.
+        # Push the first state to the data structure.
+        if self.type != "ucs":
+            if self.type == "dfs":
+                dstruct = Stack()
+            elif self.type == "bfs":
+                dstruct = Queue()
+            elif self.type == "astar":
+                dstruct = PriorityQueueWithFunction(self.heuristic)
+            dstruct.push((start, [], cost))
+        else:
+            dstruct = PriorityQueue()
+            dstruct.push((start, [], cost), cost)
+
+        # Iterate through the entire data structure.
+        while not dstruct.isEmpty():
+            # Deconstruct the tuple created by getSuccessors.
+            # A "successor" is a member of the list of places deemed dissimilar
+            # from the current node. That list is generated from the similarity
+            # function applied to the current node and the full list of places
+            # returned from the Google API call
+            event, previous, cost = dstruct.pop()
+
+            # Perhaps something like the below to return
+            if len(previous) == 7:
+                # print self.type, cost
+                return previous, cost
+
+            # Check if the current place has been visited before.
+            if event not in visited:
+                visited.append(event)
+                # Add the successors of the place to the data structure.
+                # for successor in problem.getSuccessors(state):
+                for successor in c.similarity(event, filtered_list):
+                    sadness = successor["sadness"]
+                    succ_cost = sum(sadness) + max(sadness)
+                    # Let previous store all the previous places
+                    if self.type == "ucs":
+                        dstruct.push((successor, previous + [successor], cost + succ_cost), cost + succ_cost)
+                    else:
+                        dstruct.push((successor, previous + [successor], cost + succ_cost))
 
     def dfsSearch(self, party):
         """
@@ -51,36 +108,46 @@ class Algorithm:
         visited = []
         # cost stores the total sadness of the current tree
         cost = 0
-        # The starting state is the first of the full list of activities returned # from the Google search
+        # The starting state is the first of the full list of activities
+        # returned from the Google search
         filteredList = party.filteredPlaces
         path = []
 
+        # Initialize the data structure for the frontier, a stack, and push
+        # the first node to it
         stack = Stack()
-
         stack.push((path, filteredList, cost))
 
-        # Iterate through the entire data structure.
+        # Iterate through the entire data structure
         while not stack.isEmpty():
+            # Deconstruct the tuple created by the successor function
+            # A "successor" is a member of the list of places deemed dissimilar
+            # from the current node. That list is generated from the similarity
+            # function applied to the current node and the full list of places
+            # returned from the Google API call
             path, remaining, cost = stack.pop()
 
+            # The goal test
             if len(path) == 7:
                 return path, cost
 
             if len(path) != 0:
+                # Get the last event in the path and check if it was visited
                 event = path[-1]
-                if path not in visited:
-                    visited.append(path)
+                if event not in visited:
+                    visited.append(event)
+                    # Find the successors of the current node
                     nextList = c.similarity(event, remaining)
-                    # Add the successors of the place to the data structure.
-                    # for successor in problem.getSuccessors(state):
+                    # Iterate through the successors and add them to the
+                    # frontier
                     for successor in nextList:
-                        if successor not in path:
-                            sadness = successor["sadness"]
-                            nextCost = sum(sadness) + max(sadness)
-                            # Let previous store all the previous places
-                            stack.push((path + [successor], nextList, cost + nextCost))
+                        # Extract the sadness
+                        sadness = successor["sadness"]
+                        # Find the cost and push the new state to the frontier
+                        nextCost = sum(sadness) + max(sadness)
+                        stack.push((path + [successor], nextList, cost + nextCost))
             else:
-                # for the initial empty path
+                # For the initial empty path
                 for successor in filteredList:
                     sadness = successor["sadness"]
                     nextCost = sum(sadness) + max(sadness)
@@ -100,39 +167,57 @@ class Algorithm:
         return: Tuple of a list of the best 7 options for an activity and
         the total sadness associated with that list
         """
+        # Initialize variables to store visited states, the cost, and
+        # the starting state
+        # visited stores the places that have already been visited
         visited = []
+        # cost stores the total sadness of the current tree
         cost = 0
+        # The starting state is the first of the full list of activities
+        # returned from the Google search
         filteredList = party.filteredPlaces
         path = []
 
+        # Initialize the data structure for the frontier, a queue, and push
+        # the first node to it
         queue = Queue()
-
         queue.push((path, filteredList, cost))
 
+        # Iterate through the entire data structure
         while not queue.isEmpty():
+            # Deconstruct the tuple created by the successor function
+            # A "successor" is a member of the list of places deemed dissimilar
+            # from the current node. That list is generated from the similarity
+            # function applied to the current node and the full list of places
+            # returned from the Google API call
             path, remaining, cost = queue.pop()
 
+            # The goal test
             if len(path) == 7:
                 return path, cost
-            else:
-                if len(path) != 0:
-                    event = path[-1]
-                    if path not in visited:
-                        visited.append(path)
-                        nextList = c.similarity(event, remaining)
-                        for successor in nextList:
-                            if successor not in path:
-                                sadness = successor["sadness"]
-                                nextCost = sum(sadness) + max(sadness)
-                                queue.push((path + [successor], nextList, cost + nextCost))
 
-                else:
-                    for successor in filteredList:
-                        sadness = successor["sadness"]
-                        nextCost = sum(sadness) + max(sadness)
-                        newList = copy.deepcopy(filteredList)
-                        newList.remove(successor)
-                        queue.push((path + [successor], newList, cost + nextCost))
+            if len(path) != 0:
+                # Get the last event in the path and check if it was visited
+                event = path[-1]
+                # Find the successors of the current node
+                nextList = c.similarity(event, remaining)
+                # Iterate through the successors and add them to the
+                # frontier
+                for successor in nextList:
+                    # Extract the sadness
+                    sadness = successor["sadness"]
+                    # Find the cost and push the new state to the frontier
+                    nextCost = sum(sadness) + max(sadness)
+                    queue.push((path + [successor], nextList, cost + nextCost))
+
+            else:
+                # For the initial empty path
+                for successor in filteredList:
+                    sadness = successor["sadness"]
+                    nextCost = sum(sadness) + max(sadness)
+                    newList = copy.deepcopy(filteredList)
+                    newList.remove(successor)
+                    queue.push((path + [successor], newList, cost + nextCost))
 
     def greedySearch(self, party):
         """
@@ -146,31 +231,51 @@ class Algorithm:
         return: Tuple of a list of the best 7 options for an activity and
         the total sadness associated with that list
         """
+        # Initialize variables to store the visited states,
+        # the cost and the starting state
+        # cost stores the total sadness of the current tree
         visited = []
         cost = 0
+        # The starting state is the first of the full list of activities
+        # returned from the Google search
         filteredList = party.filteredPlaces
         path = []
 
+        # Initialize the data structure for the frontier, a priority queue,
+        # and push the first node to it
         prioQ = PriorityQueue()
-
         prioQ.push((path, filteredList, cost), 0)
 
+        # Iterate through the entire data structure
         while not prioQ.isEmpty():
+            # Deconstruct the tuple created by the successor function
+            # A "successor" is a member of the list of places deemed dissimilar
+            # from the current node. That list is generated from the similarity
+            # function applied to the current node and the full list of places
+            # returned from the Google API call
             path, remaining, cost = prioQ.pop()
+
+            # The goal test
             if len(path) == 7:
                 return path, cost
 
             if len(path) != 0:
+                # Get the last event in the path and check if it was visited
                 event = path[-1]
                 if path not in visited:
                     visited.append(path)
+                    # Find the successors of the current node
                     newList = c.similarity(event, remaining)
                     for successor in newList:
+                        # Check if the successor is in the current path
                         if successor not in path:
+                            # Extract the sadness
                             sadness = successor["sadness"]
+                            # Find the cost and push the new state to the frontier
                             nextCost = sum(sadness) + max(sadness)
                             prioQ.push((path + [successor], newList, cost + nextCost), heuristic((path + [successor], newList, cost + nextCost)))
             else:
+                # For the initial empty path
                 for successor in filteredList:
                     sadness = successor["sadness"]
                     nextCost = sum(sadness) + max(sadness)
@@ -190,32 +295,48 @@ class Algorithm:
         return: Tuple of a list of the best 7 options for an activity and
         the total sadness associated with that list
         """
+        # Initialize variables to store the visited states,
+        # the cost, and the starting state
         visited = []
         cost = 0
         filteredList = party.filteredPlaces
         path = []
 
+        # Initialize the data structure for the frontier, a priority queue
+        # with a function, and push the first node to it
         prioQ = PriorityQueueWithFunction(astarFunction)
-
         prioQ.push((path, filteredList, cost))
 
+        # Iterate through the entire data structure
         while not prioQ.isEmpty():
+            # Deconstruct the tuple created by the successor function
+            # A "successor" is a member of the list of places deemed dissimilar
+            # from the current node. That list is generated from the similarity
+            # function applied to the current node and the full list of places
+            # returned from the Google API call
             path, remaining, cost = prioQ.pop()
 
+            # The goal test
             if len(path) == 7:
                 return path, cost
 
             if len(path) != 0:
+                # Get the last event in the path and check if it was visited
                 event = path[-1]
                 if path not in visited:
                     visited.append(path)
+                    # Find the successors of the current node
                     nextList = c.similarity(event, remaining)
+                    # Iterate through the successors and add them to the
+                    # frontier
                     for successor in nextList:
-                        if successor not in path:
-                            sadness = successor["sadness"]
-                            nextCost = sum(sadness) + max(sadness)
-                            prioQ.push((path + [successor], nextList, cost + nextCost))
+                        # Extract the sadness
+                        sadness = successor["sadness"]
+                        # Find the cost and push the new state to the frontier
+                        nextCost = sum(sadness) + max(sadness)
+                        prioQ.push((path + [successor], nextList, cost + nextCost))
             else:
+                # For the initial empty path
                 for successor in filteredList:
                     sadness = successor["sadness"]
                     nextCost = sum(sadness) + max(sadness)
@@ -235,38 +356,54 @@ class Algorithm:
         return: Tuple of a list of the best 7 options for an activity and
         the total sadness associated with that list
         """
-        level = 0
+        # Initialize variables to store the visited path,
+        # the cost, and the starting state
         visited = []
         cost = 0
         filteredList = party.filteredPlaces
         path = []
 
+        # Initialize the data structure for the frontier, a priority queue
+        # with a function, and push the first node to it
         prioQ = PriorityQueue()
-
         prioQ.push((path, filteredList, cost), cost)
 
+        # Iterate through the entire data structure
         while not prioQ.isEmpty():
+            # Deconstruct the tuple created by the successor function
+            # A "successor" is a member of the list of places deemed dissimilar
+            # from the current node. That list is generated from the similarity
+            # function applied to the current node and the full list of places
+            # returned from the Google API call
             path, remaining, cost = prioQ.pop()
+
+            # The goal test
             if len(path) == 7:
                 return path, cost
-            else:
-                if len(path) != 0:
-                    event = path[-1]
-                    if path not in visited:
-                        visited.append(path)
-                        nextList = c.similarity(event, remaining)
-                        for successor in nextList:
-                            if successor not in path:
-                                sadness = successor["sadness"]
-                                nextCost = sum(sadness) + max(sadness)
-                                prioQ.push((path + [successor], nextList, cost + nextCost), cost + nextCost)
-                else:
-                    for successor in filteredList:
+
+            if len(path) != 0:
+                # Get the last event in the path and check if it was visited
+                event = path[-1]
+                if path not in visited:
+                    visited.append(path)
+                    # Find the successors of the current node
+                    nextList = c.similarity(event, remaining)
+                    # Iterate through the successors and add them to the
+                    # frontier
+                    for successor in nextList:
+                        # Extract the sadness
                         sadness = successor["sadness"]
+                        # Find the cost and push the new state to the frontier
                         nextCost = sum(sadness) + max(sadness)
-                        newList = copy.deepcopy(filteredList)
-                        newList.remove(successor)
-                        prioQ.push((path + [successor], newList, cost + nextCost), cost + nextCost)
+                        prioQ.push((path + [successor], nextList, cost + nextCost), cost + nextCost)
+            else:
+                # For the initial empty path
+                for successor in filteredList:
+                    sadness = successor["sadness"]
+                    nextCost = sum(sadness) + max(sadness)
+                    newList = copy.deepcopy(filteredList)
+                    newList.remove(successor)
+                    prioQ.push((path + [successor], newList, cost + nextCost), cost + nextCost)
 
 # The following are the classes for the data structures
 class Stack:
@@ -362,8 +499,7 @@ class PriorityQueueWithFunction(PriorityQueue):
 
 def astarFunction(state):
     """
-    Implement the function used to determine the queuing order for the A*
-    function.
+    Determine the queuing order for the A* function.
     state (list): Information for a given state.
 
     return: The heuristic applied to the state added to the cost.

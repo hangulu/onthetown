@@ -4,3 +4,7 @@ requests
 werkzeug
 requests-cache
 redis
+numpy
+scipy
+matplotlib
+pandas

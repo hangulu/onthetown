@@ -12,6 +12,9 @@ requests = "*"
 werkzeug = "*"
 requests-cache = "*"
 redis = "*"
+numpy = "*"
+scipy = "*"
+matplotlib = "*"
 
 [requires]
 python_version = "2.7"
