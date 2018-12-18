@@ -97,19 +97,18 @@ class Algorithm:
                     else:
                         dstruct.push((successor, previous + [successor], cost + succ_cost))
 
-"""
-The search algorithms are below and each function name describes the algorithm.
-They all take in a party of users and events list and return a
-solution. In the social plannnig case, the search problem is the
-list of viable options for an activity, and the object returned is
-a list of the "best" 7.
-party (Party object): An object containing information about a
-potential meetup
-
-return: Tuple of a list of the best 7 options for an activity and
-the total sadness associated with that list
-"""
     def dfsSearch(self, party):
+        """
+        The DFS algorithm. Takes in a search problem and returns a
+        solution. In the social plannnig case, the search problem is the
+        list of viable options for an activity, and the object returned is
+        a list of the "best" 7.
+        problem (Party object): An object containing information about a
+        potential meetup
+
+        return: Tuple of a list of the best 7 options for an activity and
+        the total sadness associated with that list
+        """
         # Initialize variables to store visited states, the cost, and
         # the starting state
         # visited stores the places that have already been visited
@@ -153,6 +152,17 @@ the total sadness associated with that list
                     stack.push((path + [successor], filteredList, cost + nextCost))
 
     def bfsSearch(self, party):
+        """
+        The BFS algorithm. Takes in a search problem and returns a
+        solution. In the social plannnig case, the search problem is the
+        list of viable options for an activity, and the object returned is
+        a list of the "best" 7.
+        problem (Party object): An object containing information about a
+        potential meetup
+
+        return: Tuple of a list of the best 7 options for an activity and
+        the total sadness associated with that list
+        """
         visited = []
         cost = 0
         filteredList = party.filteredPlaces
@@ -185,6 +195,17 @@ the total sadness associated with that list
                         queue.push((path + [successor], newList, cost + nextCost))
 
     def greedySearch(self, party):
+        """
+        The Greedy Search algorithm. Takes in a search problem and returns a
+        solution. In the social plannnig case, the search problem is the
+        list of viable options for an activity, and the object returned is
+        a list of the "best" 7.
+        problem (Party object): An object containing information about a
+        potential meetup
+
+        return: Tuple of a list of the best 7 options for an activity and
+        the total sadness associated with that list
+        """
         visited = []
         cost = 0
         filteredList = party.filteredPlaces
@@ -218,6 +239,17 @@ the total sadness associated with that list
                     prioQ.push((path + [successor], filteredList, cost + nextCost), heuristic((path + [successor], newList, cost + nextCost)))
 
     def astarSearch(self, party):
+        """
+        The A* Search algorithm. Takes in a search problem and returns a
+        solution. In the social plannnig case, the search problem is the
+        list of viable options for an activity, and the object returned is
+        a list of the "best" 7.
+        problem (Party object): An object containing information about a
+        potential meetup
+
+        return: Tuple of a list of the best 7 options for an activity and
+        the total sadness associated with that list
+        """
         visited = []
         cost = 0
         filteredList = party.filteredPlaces
@@ -249,6 +281,17 @@ the total sadness associated with that list
                     prioQ.push((path + [successor], filteredList, cost + nextCost))
 
     def ucsSearch(self, party):
+        """
+        The UCS algorithm. Takes in a search problem and returns a
+        solution. In the social plannnig case, the search problem is the
+        list of viable options for an activity, and the object returned is
+        a list of the "best" 7.
+        problem (Party object): An object containing information about a
+        potential meetup
+
+        return: Tuple of a list of the best 7 options for an activity and
+        the total sadness associated with that list
+        """
         level = 0
         visited = []
         cost = 0
@@ -358,7 +401,7 @@ class PriorityQueue:
 
 class PriorityQueueWithFunction(PriorityQueue):
     """
-    Implements a priority queue with the same push/pop signature of the
+    Implement a priority queue with the same push/pop signature of the
     Queue and the Stack classes. This is designed for drop-in replacement for
     those two classes. The caller has to provide a priority function, which
     extracts each item's priority.
@@ -373,12 +416,19 @@ class PriorityQueueWithFunction(PriorityQueue):
         PriorityQueue.push(self, item, self.priorityFunction(item))
 
 def astarFunction(state):
+    """
+    Implement the function used to determine the queuing order for the A*
+    function.
+    state (list): Information for a given state.
+
+    return: The heuristic applied to the state added to the cost.
+    """
     return state[2] + heuristic(state)
 
 def heuristic(state):
     """
-    Takes in a state (a triple of current place, all places before the current
-    place, and the total cost associated with the current place) and applies a
+    Take in a state (a triple of current place, all places before the current
+    place, and the total cost associated with the current place) and apply a
     heuristic to it for A* search.
     state (triple): (current place, all places before the current
     place, the total cost associated with the current place)

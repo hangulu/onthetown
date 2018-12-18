@@ -141,7 +141,7 @@ class Party:
 
     def addPlaces(self, data):
         """
-        Iterate through the response data recieved from API calls and add the
+        Iterate through the response data received from API calls and add the
         formatted places to the list of all the places. Record the name,
         price, rating, longitude and latitude, address, and types associated
         with the event for each of the results.
