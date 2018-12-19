@@ -18,7 +18,6 @@ app.secret_key = "DooLouGulu"
 app.config['SESSION_TYPE'] = 'redis'
 Session(app)
 
-
 # Establish connection
 conn = create_connection("server/users.db")
 
@@ -360,7 +359,8 @@ def solution(c_link):
             if custom_link:
                 # Create the database name and query it for all records
                 db_name = custom_link.replace("-", "")
-                select_query = "SELECT * FROM {}".format(db_name)
+                # select_query = "SELECT * FROM {}".format(db_name)
+                select_query = "SELECT * FROM users"
                 raw_party = c.execute(select_query)
                 party = []
                 # Log each user as a dictionary, and append it to the list
@@ -375,19 +375,32 @@ def solution(c_link):
                     user_dict = {"name": str(user[1]), "email": str(user[0]), "act_pref": act_pref, "price_pref": int(price_pref), "rating_pref": float(rating_pref), "location": (float(latitude), float(longitude))}
 
                     party.append(user_dict)
-                    return json.dumps({"test": str(party)})
 
                 # Find the solutions
                 # Initialize the Party() object
                 new_party = cnt.Party()
                 # Add each user to the party and update it
-                for user in new_party:
-                    new_party.addToParty(User(user.name, user.location[0], user.location[1], user.price_pref, user.rating_pref, user.act_pref))
+                for user in party:
+                    new_party.addToParty(cnt.User(user['name'], user['location'][0], user['location'][1], user['price_pref'], user['rating_pref'], user['act_pref']))
                 new_party.updateAll()
 
                 # Initialize the Greedy algorithm and run it on the given party
                 algs = alg.Algorithm()
-                greedy = algs.greedySearch(new_party)[0]
+
+                # The following is dummy data to show the functionality
+                # It will be replaced once OTT is moved to a domain, and
+                # the dynamic links work, allowing for multiple users
+                dummy_party = cnt.Party()
+                hakeem = cnt.User("Hakeem", 40.807835, -73.963957, 4, 5, ["bar", "restaurant"])
+                louie = cnt.User("Louie", 40.709013, -74.013692, 3, 4, ["restaurant", "movie"])
+                amadou = cnt.User("Amadou", 40.773585, -73.936027, 2, 3, ["night_club", "bar", "restaurant"])
+                dummy_party.addToParty(hakeem)
+                dummy_party.addToParty(louie)
+                dummy_party.addToParty(amadou)
+                dummy_party.updateAll()
+
+                # Extract the list of events
+                soln = algs.greedySearch(dummy_party)[0]
 
                 # Display the solutions
                 return render_template("places.html", name=session["name"], named_gathering=named_gathering, link=custom_link, soln=soln)

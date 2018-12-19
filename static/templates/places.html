@@ -29,7 +29,15 @@
                <td class="c3">{{ place.rating }}</td>
                <td class="c4">{{ place.location }}</td>
                <td class="c5">{{ place.address }}</td>
-               <td class="c6">{{ place.types }}</td>
+               <td class="c6">
+                 {% for i in range(place["types"]|length) %}
+                   {% if i == (place["types"]|length - 1) %}
+                     {{ place["types"][i] + "." }}
+                   {% else %}
+                     {{ place["types"][i] + ", " }}
+                   {% endif %}
+                 {% endfor %}
+               </td>
             </tr>
             {% endfor %}
           </table>
