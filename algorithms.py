@@ -24,7 +24,7 @@ class Algorithm:
         """
         Initialize the Algorithm class.
         """
-            pass
+        pass
 
     def search(self, party):
         """
