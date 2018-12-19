@@ -385,9 +385,9 @@ def solution(c_link):
                     new_party.addToParty(User(user.name, user.location[0], user.location[1], user.price_pref, user.rating_pref, user.act_pref))
                 new_party.updateAll()
 
-                # Initialize the A* algorithm and run it on the given party
-                astar = alg.Algorithm("astar", sadnessFunction, alg.astar_heuristic)
-                soln = astar.search(new_party)
+                # Initialize the Greedy algorithm and run it on the given party
+                algs = alg.Algorithm()
+                greedy = algs.greedySearch(new_party)[0]
 
                 # Display the solutions
                 return render_template("places.html", name=session["name"], named_gathering=named_gathering, link=custom_link, soln=soln)
